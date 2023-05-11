@@ -3,43 +3,66 @@
  "infinite":false,
  "layers":[
         {
-         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 53, 54, 55,
-            0, 53, 54, 55, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 53, 54, 55,
-            0, 53, 54, 55, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 56, 59, 59, 58,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            92, 93, 94, 95, 58, 0, 0, 0, 0, 0],
+         "data":[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            1, 2, 3, 1, 2, 3, 1, 2, 3, 4, 5, 0, 0, 0, 0, 2147483653, 2147483652, 2147483651, 2147483650, 2147483649, 2147483650, 2147483649, 2147483651, 2147483650, 2147483649,
+            9, 10, 9, 10, 10, 9, 10, 10, 11, 12, 13, 0, 0, 0, 0, 2147483661, 2147483660, 2147483659, 2147483658, 2147483657, 2147483658, 2147483657, 10, 2147483658, 2147483657,
+            17, 18, 17, 18, 18, 17, 18, 18, 19, 20, 21, 0, 0, 0, 0, 2147483669, 2147483668, 2147483667, 2147483666, 2147483665, 2147483666, 2147483665, 18, 2147483666, 2147483665],
          "height":10,
          "id":1,
          "name":"test",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
-         "width":10,
+         "width":25,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":2,
+         "name":"cristaux",
+         "objects":[
+                {
+                 "class":"",
+                 "gid":41,
+                 "height":32,
+                 "id":4,
+                 "name":"",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":736,
+                 "y":224
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
          "x":0,
          "y":0
         }],
- "nextlayerid":2,
- "nextobjectid":1,
+ "nextlayerid":3,
+ "nextobjectid":6,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.9.2",
  "tileheight":32,
  "tilesets":[
         {
-         "columns":13,
+         "columns":8,
          "firstgid":1,
-         "image":"assets\/assets_img.png",
-         "imageheight":288,
-         "imagewidth":416,
+         "image":"assets\/biome_glace.png",
+         "imageheight":256,
+         "imagewidth":256,
          "margin":0,
-         "name":"assets",
+         "name":"assets_glace",
          "spacing":0,
-         "tilecount":117,
+         "tilecount":64,
          "tileheight":32,
          "tiles":[
                 {
@@ -48,7 +71,7 @@
                         {
                          "name":"estSolide",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -57,7 +80,7 @@
                         {
                          "name":"estSolide",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -93,7 +116,7 @@
                         {
                          "name":"estSolide",
                          "type":"bool",
-                         "value":true
+                         "value":false
                         }]
                 }, 
                 {
@@ -102,7 +125,7 @@
                         {
                          "name":"estSolide",
                          "type":"bool",
-                         "value":true
+                         "value":false
                         }]
                 }, 
                 {
@@ -120,7 +143,7 @@
                         {
                          "name":"estSolide",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -129,17 +152,16 @@
                         {
                          "name":"estSolide",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
-                },
-            
+                }, 
                 {
                  "id":10,
                  "properties":[
                         {
                          "name":"estSolide",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -148,7 +170,7 @@
                         {
                          "name":"estSolide",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -157,7 +179,7 @@
                         {
                          "name":"estSolide",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -184,7 +206,7 @@
                         {
                          "name":"estSolide",
                          "type":"bool",
-                         "value":true
+                         "value":false
                         }]
                 }, 
                 {
@@ -220,17 +242,16 @@
                         {
                          "name":"estSolide",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
-                },
-            
+                }, 
                 {
                  "id":20,
                  "properties":[
                         {
                          "name":"estSolide",
                          "type":"bool",
-                         "value":false
+                         "value":true
                         }]
                 }, 
                 {
@@ -268,7 +289,8 @@
                          "type":"bool",
                          "value":false
                         }]
-                }, 
+                },
+            
                 {
                  "id":25,
                  "properties":[
@@ -302,7 +324,7 @@
                         {
                          "name":"estSolide",
                          "type":"bool",
-                         "value":true
+                         "value":false
                         }]
                 }, 
                 {
@@ -313,8 +335,7 @@
                          "type":"bool",
                          "value":true
                         }]
-                },
-            
+                }, 
                 {
                  "id":30,
                  "properties":[
@@ -404,8 +425,7 @@
                          "type":"bool",
                          "value":false
                         }]
-                },
-            
+                }, 
                 {
                  "id":40,
                  "properties":[
@@ -421,7 +441,7 @@
                         {
                          "name":"estSolide",
                          "type":"bool",
-                         "value":true
+                         "value":false
                         }]
                 }, 
                 {
@@ -430,7 +450,7 @@
                         {
                          "name":"estSolide",
                          "type":"bool",
-                         "value":true
+                         "value":false
                         }]
                 }, 
                 {
@@ -439,7 +459,7 @@
                         {
                          "name":"estSolide",
                          "type":"bool",
-                         "value":true
+                         "value":false
                         }]
                 }, 
                 {
@@ -448,7 +468,7 @@
                         {
                          "name":"estSolide",
                          "type":"bool",
-                         "value":true
+                         "value":false
                         }]
                 }, 
                 {
@@ -477,639 +497,11 @@
                          "type":"bool",
                          "value":false
                         }]
-                }, 
-                {
-                 "id":48,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":49,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                },
-            
-                {
-                 "id":50,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":51,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":52,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":53,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":54,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":55,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":56,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":57,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":58,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":59,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                },
-            
-                {
-                 "id":60,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":61,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":62,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":63,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":64,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":65,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":66,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":67,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":68,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":69,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                },
-            
-                {
-                 "id":70,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":71,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":72,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":73,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":74,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":75,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":76,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":77,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":78,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":79,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                },
-            
-                {
-                 "id":80,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":81,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":82,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":83,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":84,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":85,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":86,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":87,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":88,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":89,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                },
-            
-                {
-                 "id":90,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":91,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":92,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":93,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":94,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":95,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":96,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":97,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":98,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":99,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                },
-            
-                {
-                 "id":100,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":101,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":102,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":103,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":104,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":105,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":106,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":107,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":108,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":109,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                },
-            
-                {
-                 "id":110,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":111,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":112,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":113,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":114,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":true
-                        }]
-                }, 
-                {
-                 "id":115,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
-                }, 
-                {
-                 "id":116,
-                 "properties":[
-                        {
-                         "name":"estSolide",
-                         "type":"bool",
-                         "value":false
-                        }]
                 }],
          "tilewidth":32
         }],
  "tilewidth":32,
  "type":"map",
  "version":"1.9",
- "width":10
+ "width":25
 }
