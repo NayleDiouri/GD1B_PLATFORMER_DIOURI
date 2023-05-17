@@ -21,12 +21,12 @@ class debut extends Phaser.Scene {
         this.load.image("SpriteFireBall", "assets/SpriteFireBall.png")
         this.load.image("plante", "assets/plante.png")
         this.load.image("plante_mine", "assets/plante_mine.png")
+        this.load.image("cascade", "assets/cascade.png")
     }
 
     create() {
-        this.SpriteHitBox = this.physics.add.sprite(1230, 50, "SpriteHitBox").setSize(36, 288);
+        
         this.ShrinkHitBox = this.physics.add.sprite(24*32,9.5*32,'SpriteHitBox').setSize(576, 32);
-
         this.add.image(800, 800, "background");
         this.appuyer = false;
         //dash
@@ -77,6 +77,10 @@ class debut extends Phaser.Scene {
             "test",
             tileset
         );
+        const mousse = carteDuNiveau.createLayer(
+            "mousse",
+            tileset
+        );
         test.setCollisionByProperty({ estSolide: true });
         this.player = this.physics.add.sprite(50, 50, 'perso');
         this.player.setCollideWorldBounds(true);
@@ -85,9 +89,8 @@ class debut extends Phaser.Scene {
         this.plante = this.physics.add.group();
         this.plante_mine = this.physics.add.group();
 
-        this.SpriteHitBox.setCollideWorldBounds(true);
         this.ShrinkHitBox.body.setAllowGravity(false);
-        this.SpriteHitBox.setImmovable(true);
+
         this.physics.add.collider(this.player, test);
         this.physics.add.collider(this.player, this.plante, this.touchPlant, null, this)
         this.physics.add.collider(this.plante_mine, test)
@@ -104,6 +107,11 @@ class debut extends Phaser.Scene {
         this.calque_cristaux = carteDuNiveau.getObjectLayer('cristaux');
         this.calque_cristaux.objects.forEach(calque_cristaux => {
             const POP = this.cristaux.create(calque_cristaux.x + 0, calque_cristaux.y - 48, "cristaux").setScale(2).body.setAllowGravity(false).setImmovable(true);
+        });
+        this.cascade = this.physics.add.group();
+        this.calque_cascade = carteDuNiveau.getObjectLayer('cascade');
+        this.calque_cascade.objects.forEach(calque_cascade => {
+            const POP = this.cascade.create(calque_cascade.x + 0, calque_cascade.y - 160, "cascade").body.setAllowGravity(false).setImmovable(true);
         });
 
         this.anims.create({
@@ -131,8 +139,9 @@ class debut extends Phaser.Scene {
 
     update() {
 
-        
-
+        if(this.clavier.D.isDown){
+        console.log(this. onPlant)
+        }
         if (this.clavier.I.isDown && this.mageFeu == false && this.estPetit == false){
             this.mageFeu = true;
             this.mageEau = false;
@@ -267,7 +276,7 @@ class debut extends Phaser.Scene {
 
         }
 
-        if (this.clavier.A.isDown && this.physics.overlap(this.player, this.SpriteHitBox) && this.mageEau == true) {
+        if (this.clavier.A.isDown && this.physics.overlap(this.player, this.cascade) && this.mageEau == true) {
 
             this.player.body.setAllowGravity(false);
             this.player.setVelocityY(-150)
