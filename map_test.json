@@ -51,14 +51,26 @@
          "objects":[
                 {
                  "class":"",
-                 "gid":41,
+                 "gid":42,
                  "height":32,
-                 "id":6,
+                 "id":44,
                  "name":"",
                  "rotation":0,
                  "visible":true,
                  "width":32,
-                 "x":768,
+                 "x":896,
+                 "y":224
+                }, 
+                {
+                 "class":"",
+                 "gid":42,
+                 "height":32,
+                 "id":45,
+                 "name":"",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":704,
                  "y":224
                 }],
          "opacity":1,
@@ -93,7 +105,7 @@
         {
          "draworder":"topdown",
          "id":8,
-         "name":"enemy_shoot",
+         "name":"enemyShoot",
          "objects":[
                 {
                  "class":"",
@@ -106,6 +118,30 @@
                  "width":32,
                  "x":416,
                  "y":96
+                }, 
+                {
+                 "class":"",
+                 "gid":6,
+                 "height":32,
+                 "id":49,
+                 "name":"",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":576,
+                 "y":224
+                }, 
+                {
+                 "class":"",
+                 "gid":6,
+                 "height":32,
+                 "id":50,
+                 "name":"",
+                 "rotation":0,
+                 "visible":true,
+                 "width":32,
+                 "x":1088,
+                 "y":320
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -114,7 +150,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":41,
+ "nextobjectid":51,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.9.2",

@@ -12,9 +12,9 @@ class debut extends Phaser.Scene {
         this.load.spritesheet('perso', 'assets/perso.png',
             { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet('perso_feu', 'assets/perso_feu.png',
-            { frameWidth: 64, frameHeight: 64 }); 
+            { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet('perso_nature', 'assets/perso_nature.png',
-            { frameWidth: 64, frameHeight: 64 }); 
+            { frameWidth: 64, frameHeight: 64 });
         this.load.spritesheet('perso_eau', 'assets/perso_eau.png',
             { frameWidth: 64, frameHeight: 64 });
 
@@ -22,12 +22,13 @@ class debut extends Phaser.Scene {
         this.load.image("plante", "assets/plante.png")
         this.load.image("plante_mine", "assets/plante_mine.png")
         this.load.image("cascade", "assets/cascade.png")
-        this.load.image("enemyShoot", "assets/enemyShoot")
+        this.load.image("enemyShoot", "assets/enemyShoot.png")
+        this.load.image("Bdg", "assets/BDG.png")
     }
 
     create() {
-        
-        this.ShrinkHitBox = this.physics.add.sprite(24*32,9.5*32,'SpriteHitBox').setSize(576, 32);
+
+        this.ShrinkHitBox = this.physics.add.sprite(24 * 32, 9.5 * 32, 'SpriteHitBox').setSize(576, 32);
         this.add.image(800, 800, "background");
         this.appuyer = false;
         //dash
@@ -55,7 +56,7 @@ class debut extends Phaser.Scene {
         this.plantSpawn = -1;
         this.onPlant = false;
         //plante
-        
+
         //plante_mine
         this.canPlant_mine = true;
         this.plant_mineSpawn = -3
@@ -67,6 +68,12 @@ class debut extends Phaser.Scene {
         this.mageEau = false;
         this.mageBase = true;
         //mages
+
+        //enemyShoot
+        this.enemyShootHp = 3;
+        this.CanBdg = 3;
+        this.nombreEnemy = 0;
+        //enemyShoot
 
 
         const carteDuNiveau = this.add.tilemap("carte");
@@ -87,6 +94,7 @@ class debut extends Phaser.Scene {
         this.player.setCollideWorldBounds(true);
 
         this.SpriteFireBall = this.physics.add.group();
+        this.Bdg = this.physics.add.group();
         this.plante = this.physics.add.group();
         this.plante_mine = this.physics.add.group();
 
@@ -116,12 +124,13 @@ class debut extends Phaser.Scene {
         });
         this.enemyShoot = this.physics.add.group();
         this.physics.add.collider(this.player, this.enemyShoot)
-        this.physics.add.collider(this.SpriteFireBall, this.enemyShoot);
+        this.physics.add.collider(this.SpriteFireBall, this.enemyShoot, this.enemyShootKill, null, this);
         this.calque_enemyShoot = carteDuNiveau.getObjectLayer('enemyShoot');
         this.calque_enemyShoot.objects.forEach(calque_enemyShoot => {
-            const POP = this.enemyShoot.create(calque_enemyShoot.x + 0, calque_enemyShoot.y - 0, "enemyShoot").body.setAllowGravity(false).setImmovable(true);
+            this.nombreEnemy += 1
+            const POP = this.enemyShoot.create(calque_enemyShoot.x + 16, calque_enemyShoot.y - 16, "enemyShoot").body.setAllowGravity(false).setImmovable(true);
         });
-        
+
 
         this.anims.create({
             key: 'perso',
@@ -148,24 +157,24 @@ class debut extends Phaser.Scene {
 
     update() {
 
-        if(this.clavier.D.isDown){
-        console.log(this. onPlant)
+        if (this.clavier.D.isDown) {
+            console.log(this.onPlant)
         }
-        if (this.clavier.I.isDown && this.mageFeu == false && this.estPetit == false){
+        if (this.clavier.I.isDown && this.mageFeu == false && this.estPetit == false) {
             this.mageFeu = true;
             this.mageEau = false;
             this.mageBase = false;
             this.mageNature = false;
             this.player.anims.play("perso_feu", true)
         }
-        if (this.clavier.O.isDown && this.mageEau == false){
+        if (this.clavier.O.isDown && this.mageEau == false) {
             this.mageFeu = false;
             this.mageEau = true;
             this.mageBase = false;
             this.mageNature = false;
             this.player.anims.play("perso_eau", true)
         }
-        if (this.clavier.P.isDown && this.mageNature == false && this.estPetit == false){           
+        if (this.clavier.P.isDown && this.mageNature == false && this.estPetit == false) {
             this.mageFeu = false;
             this.mageEau = false;
             this.mageBase = false;
@@ -183,7 +192,7 @@ class debut extends Phaser.Scene {
         }
 
         if (this.clavier.A.isDown && this.canPlant == true && this.mageNature == true && this.player.body.blocked.down && this.onPlant == false) {
-            if(this.plantSpawn >= 0){
+            if (this.plantSpawn >= 0) {
                 this.plante.getChildren()[this.plantSpawn].destroy()
                 this.plantSpawn -= 1
             }
@@ -193,11 +202,11 @@ class debut extends Phaser.Scene {
             setTimeout(() => {
                 this.plante.setVelocityY(0);
                 this.canPlant = true;
-            }, 2000);
+            }, 1200);
         }
 
-        if (this.clavier.E.isDown && this.canPlant_mine == true && this.mageNature == true && this.player.body.blocked.down && this.onPlant == false && !this.physics.overlap(this.player, this.plante_mine)){
-            if(this.plant_mineSpawn >= 0){
+        if (this.clavier.E.isDown && this.canPlant_mine == true && this.mageNature == true && this.player.body.blocked.down && this.onPlant == false && !this.physics.overlap(this.player, this.plante_mine)) {
+            if (this.plant_mineSpawn >= 0) {
                 this.plante_mine.getChildren()[this.plant_mineSpawn].destroy()
                 this.plant_mineSpawn -= 1
             }
@@ -299,24 +308,45 @@ class debut extends Phaser.Scene {
             this.player.setScale(0.5);
             this.player.setSize(128, 64);
 
-                this.estPetit = true;
+            this.estPetit = true;
         }
-        else if (this.clavier.E.isDown && this.estPetit == true && this.mageEau == true && !this.physics.overlap(this.player, this.ShrinkHitBox) && this.appuyer ==  false ) {
+        else if (this.clavier.E.isDown && this.estPetit == true && this.mageEau == true && !this.physics.overlap(this.player, this.ShrinkHitBox) && this.appuyer == false) {
             this.player.y -= 1;
             this.player.setScale(1);
             this.player.setSize(64, 64)
 
-                this.estPetit = false;
+            this.estPetit = false;
         }
 
-        if(this.clavier.E.isDown){
+        if (this.clavier.E.isDown) {
             this.appuyer = true
         }
-        else{
+        else {
             this.appuyer = false
         }
 
         this.onPlant = false;
+        console.log(this.canBdg)
+        this.enemyShoot.getChildren().forEach(enemy => {
+            if (this.CanBdg > 0) {
+
+                if (this.player.x > enemy.x) {
+                    this.Bdg.create(enemy.x, enemy.y, "Bdg").setVelocityX(400).body.setAllowGravity(false)
+                }
+                else if (this.player.x < enemy.x) {
+                    this.Bdg.create(enemy.x, enemy.y, "Bdg").setVelocityX(-400).body.setAllowGravity(false)
+                }
+                this.CanBdg -= 1;
+            }       });
+                if(this.canBDG == 0){
+                    setTimeout(() => {
+                    this.CanBdg = this.nombreEnemy;
+
+                }, 2000);}
+        
+
+
+
     }
 
 
@@ -331,12 +361,24 @@ class debut extends Phaser.Scene {
         this.vieCristal -= 1;
         if (this.vieCristal == 0) {
             cristal.destroy()
+            this.vieCristal = 3
         }
         SpriteFireBall.destroy()
     }
-    touchPlant(player, plante){
+    touchPlant(player, plante) {
         this.onPlant = true;
     }
+
+    enemyShootKill(SpriteFireBall, enemy) {
+        this.enemyShootHp -= 1;
+        if (this.enemyShootHp == 0) {
+            enemy.destroy()
+            this.enemyShootHp = 3
+            this.nombreEnemy -= 1
+        }
+        SpriteFireBall.destroy()
+    }
+
 
 
 
