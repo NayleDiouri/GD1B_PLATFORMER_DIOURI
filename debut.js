@@ -22,6 +22,7 @@ class debut extends Phaser.Scene {
         this.load.image("plante", "assets/plante.png")
         this.load.image("plante_mine", "assets/plante_mine.png")
         this.load.image("cascade", "assets/cascade.png")
+        this.load.image("enemyShoot", "assets/enemyShoot")
     }
 
     create() {
@@ -113,6 +114,14 @@ class debut extends Phaser.Scene {
         this.calque_cascade.objects.forEach(calque_cascade => {
             const POP = this.cascade.create(calque_cascade.x + 0, calque_cascade.y - 160, "cascade").body.setAllowGravity(false).setImmovable(true);
         });
+        this.enemyShoot = this.physics.add.group();
+        this.physics.add.collider(this.player, this.enemyShoot)
+        this.physics.add.collider(this.SpriteFireBall, this.enemyShoot);
+        this.calque_enemyShoot = carteDuNiveau.getObjectLayer('enemyShoot');
+        this.calque_enemyShoot.objects.forEach(calque_enemyShoot => {
+            const POP = this.enemyShoot.create(calque_enemyShoot.x + 0, calque_enemyShoot.y - 0, "enemyShoot").body.setAllowGravity(false).setImmovable(true);
+        });
+        
 
         this.anims.create({
             key: 'perso',
