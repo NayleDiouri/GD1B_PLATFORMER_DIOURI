@@ -326,24 +326,26 @@ class debut extends Phaser.Scene {
         }
 
         this.onPlant = false;
-        console.log(this.canBdg)
+        console.log(this.CanBdg)
         this.enemyShoot.getChildren().forEach(enemy => {
             if (this.CanBdg > 0) {
 
                 if (this.player.x > enemy.x) {
                     this.Bdg.create(enemy.x, enemy.y, "Bdg").setVelocityX(400).body.setAllowGravity(false)
+                    this.CanBdg -= 1;
                 }
                 else if (this.player.x < enemy.x) {
                     this.Bdg.create(enemy.x, enemy.y, "Bdg").setVelocityX(-400).body.setAllowGravity(false)
+                    this.CanBdg -= 1;
                 }
-                this.CanBdg -= 1;
-            }       });
-                if(this.canBDG == 0){
+                if(this.CanBdg == 0){
                     setTimeout(() => {
-                    this.CanBdg = this.nombreEnemy;
+                        this.CanBdg = this.nombreEnemy
 
                 }, 2000);}
-        
+            }       });
+
+                
 
 
 
