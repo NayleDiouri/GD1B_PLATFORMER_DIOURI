@@ -25,6 +25,7 @@ class debut extends Phaser.Scene {
         this.load.image("enemyShoot", "assets/enemyShoot.png")
         this.load.image("Bdg", "assets/BDG.png")
         this.load.image("enemyRL", "assets/enemyRL.png")
+        this.load.image("enemyFollow","assets/enemyFollow.png")
     }
 
     create() {
@@ -155,6 +156,11 @@ class debut extends Phaser.Scene {
         this.calque_hitBoxR = carteDuNiveau.getObjectLayer('hitBoxR');
         this.calque_hitBoxR.objects.forEach(calque_hitBoxR => {
             const POP = this.hitBoxR.create(calque_hitBoxR.x + 16, calque_hitBoxR.y - 16, "SpriteHitBox").setSize(32,64).body.setAllowGravity(false).setImmovable(true);
+        });
+        this.enemyFollow = this.physics.add.group();
+        this.calque_enemyFollow = carteDuNiveau.getObjectLayer('enemyFollow');
+        this.calque_enemyFollow.objects.forEach(calque_enemyFollow => {
+            const POP = this.enemyFollow.create(calque_enemyFollow.x + 16, calque_enemyFollow.y - 16, "enemyFollow").body.setAllowGravity(true).setImmovable(false);
         });
         this.anims.create({
             key: 'perso',
@@ -367,7 +373,7 @@ class debut extends Phaser.Scene {
 
                 }, 2000);}
             }       });
-
+//enemyRL----------------------------------------------------------------------------------------------------------
         if(this.goL1 == true){
             this.enemyRL.getChildren()[0].setVelocityX(-50) 
         }
@@ -394,7 +400,15 @@ class debut extends Phaser.Scene {
         if(this.physics.overlap(this.enemyRL.getChildren()[1], this.hitBoxR)){
             this.goL2 = true
         }
+//enemyRL----------------------------------------------------------------------------------------------------------
 
+        if (this.enemyFollow.x < this.player.x){
+            this.enemyFollow.setVelocityX(50);
+        }
+
+        if (this.enemyFollow.x > this.player.x){
+            this.enemyFollow.setVelocityX(-50);
+        }
     }
 
 
