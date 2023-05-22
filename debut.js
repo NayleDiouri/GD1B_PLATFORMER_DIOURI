@@ -24,6 +24,7 @@ class debut extends Phaser.Scene {
         this.load.image("cascade", "assets/cascade.png")
         this.load.image("enemyShoot", "assets/enemyShoot.png")
         this.load.image("Bdg", "assets/BDG.png")
+        this.load.image("enemyRL", "assets/enemyRL.png")
     }
 
     create() {
@@ -74,6 +75,12 @@ class debut extends Phaser.Scene {
         this.CanBdg = 3;
         this.nombreEnemy = 0;
         //enemyShoot
+
+        //enemyRL
+        this.enemyRLHp = 2;
+        this.goL1= true;
+        this.goL2= true;
+        //enemyRL
 
 
         const carteDuNiveau = this.add.tilemap("carte");
@@ -131,7 +138,24 @@ class debut extends Phaser.Scene {
             const POP = this.enemyShoot.create(calque_enemyShoot.x + 16, calque_enemyShoot.y - 16, "enemyShoot").body.setAllowGravity(false).setImmovable(true);
         });
 
-
+        this.enemyRL = this.physics.add.group();
+        this.physics.add.collider(this.player,this.enemyRL)
+        this.physics.add.collider(this.SpriteFireBall,this.enemyRL,this.enemyRLKill, null, this)
+        this.calque_enemyRL = carteDuNiveau.getObjectLayer('enemyRL');
+        this.calque_enemyRL.objects.forEach(calque_enemyRL => {
+            const POP = this.enemyRL.create(calque_enemyRL.x + 16, calque_enemyRL.y - 16, "enemyRL").body.setAllowGravity(false).setImmovable(true);
+        });
+        this.hitBoxL = this.physics.add.group();
+        this.physics.add.collider(this.enemyRL, this.hitBoxL)
+        this.calque_hitBoxL = carteDuNiveau.getObjectLayer('hitBoxL');
+        this.calque_hitBoxL.objects.forEach(calque_hitBoxL => {
+            const POP = this.hitBoxL.create(calque_hitBoxL.x + 16, calque_hitBoxL.y - 16, "SpriteHitBox").setSize(32,64).body.setAllowGravity(false).setImmovable(true);
+        });
+        this.hitBoxR = this.physics.add.group();
+        this.calque_hitBoxR = carteDuNiveau.getObjectLayer('hitBoxR');
+        this.calque_hitBoxR.objects.forEach(calque_hitBoxR => {
+            const POP = this.hitBoxR.create(calque_hitBoxR.x + 16, calque_hitBoxR.y - 16, "SpriteHitBox").setSize(32,64).body.setAllowGravity(false).setImmovable(true);
+        });
         this.anims.create({
             key: 'perso',
             frames: [{ key: 'perso', frame: 0 }],
@@ -326,7 +350,6 @@ class debut extends Phaser.Scene {
         }
 
         this.onPlant = false;
-        console.log(this.CanBdg)
         this.enemyShoot.getChildren().forEach(enemy => {
             if (this.CanBdg > 0) {
 
@@ -345,9 +368,32 @@ class debut extends Phaser.Scene {
                 }, 2000);}
             }       });
 
-                
+        if(this.goL1 == true){
+            this.enemyRL.getChildren()[0].setVelocityX(-50) 
+        }
+        else{
+            this.enemyRL.getChildren()[0].setVelocityX(50)
+        }
+        if(this.physics.overlap(this.enemyRL.getChildren()[0], this.hitBoxL)){
+            this.goL1 = false
+        }
+        if(this.physics.overlap(this.enemyRL.getChildren()[0], this.hitBoxR)){
+            this.goL1 = true
+        }
 
 
+        if(this.goL2 == true){
+            this.enemyRL.getChildren()[1].setVelocityX(-50) 
+        }
+        else{
+            this.enemyRL.getChildren()[1].setVelocityX(50)
+        }
+        if(this.physics.overlap(this.enemyRL.getChildren()[1], this.hitBoxL)){
+            this.goL2 = false
+        }
+        if(this.physics.overlap(this.enemyRL.getChildren()[1], this.hitBoxR)){
+            this.goL2 = true
+        }
 
     }
 
@@ -380,6 +426,16 @@ class debut extends Phaser.Scene {
         }
         SpriteFireBall.destroy()
     }
+
+    enemyRLKill(SpriteFireBall, enemy) {
+        this.enemyRLHp -= 1;
+        if (this.enemyRLHp == 0) {
+            enemy.destroy()
+            this.enemyRLHp = 2
+        }
+        SpriteFireBall.destroy()
+    }
+
 
 
 
