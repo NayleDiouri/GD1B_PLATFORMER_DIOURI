@@ -135,7 +135,7 @@ class debut extends Phaser.Scene {
         this.enemyShoot = this.physics.add.group();
         this.physics.add.collider(this.player, this.enemyShoot)
         this.physics.add.collider(this.SpriteFireBall, this.enemyShoot, this.enemyShootKill, null, this);
-        this.calque_enemyShoot = carteDuNiveau.getObjectLayer('enemyShoot');
+        this.calque_enemyShoot = carteDuNiveau.getObjectLayer('enemyShoot');    
         this.calque_enemyShoot.objects.forEach(calque_enemyShoot => {
             this.nombreEnemy += 1
             const POP = this.enemyShoot.create(calque_enemyShoot.x + 16, calque_enemyShoot.y - 16, "enemyShoot").body.setAllowGravity(false).setImmovable(true);
