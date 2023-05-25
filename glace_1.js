@@ -32,12 +32,16 @@ class glace_1 extends Phaser.Scene {
         this.load.image("eau_profondeur","assets/eau_profondeur.png")
         this.load.image("piques", "assets/piques.png")
         this.load.image("lumieres", "assets/lumieres.png")
+        this.load.image("stalactite","assets/stalactite.png")
     }
 
     create() {
         this.fond_1 = this.add.image(448, 224, "fond_1");
         this.fond_2 = this.add.image(1000,250, "fond_2");
-
+        this.cameraY1 = 0
+        this.cameraY2 = 20*32
+        this.cameraX1 = 0
+        this.cameraX2 = 70*32
         const carteDuNiveau = this.add.tilemap("map_glace");
         const tileset = carteDuNiveau.addTilesetImage(
             "assets_glace",
@@ -63,6 +67,11 @@ class glace_1 extends Phaser.Scene {
         this.calque_lumieres.objects.forEach(calque_lumieres => {
             const POP = this.lumieres.create(calque_lumieres.x +16 , calque_lumieres.y -6, "lumieres").body.setAllowGravity(false).setImmovable(true);
         });
+        this.stalactite = this.physics.add.group();
+        this.calque_stalactite = carteDuNiveau.getObjectLayer('stalactite');
+        this.calque_stalactite.objects.forEach(calque_stalactite => {
+            const POP = this.stalactite.create(calque_stalactite.x +16 , calque_stalactite.y -16, "stalactite").body.setAllowGravity(false);
+        });
         const neige = carteDuNiveau.createLayer(
             "neige",
             tileset
@@ -71,24 +80,29 @@ class glace_1 extends Phaser.Scene {
             "sols",
             tileset
         );
-        this.player = this.physics.add.sprite(32, 16*32, 'perso');
+        this.player = this.physics.add.sprite(60*32, 4*32, 'perso');
         this.player.setCollideWorldBounds(true);
         this.player.setSize(32,48).setOffset(10,8)
 
         neige.setCollisionByExclusion(-1, true);
         sols.setCollisionByExclusion(-1, true);
 
+        this.CameraHitBox = this.physics.add.sprite(69.5*32, 96, "SpriteHitBox").setSize(32, 128)//.body.setAllowGravity(false)//.setImmovable(true)
+        this.physics.add.collider(this.CameraHitBox, sols);
         this.physics.add.collider(this.player, sols);
         this.physics.add.collider(this.player, neige);
-        this.physics.add.collider(this.player, this.piques)
+        this.physics.add.collider(this.player, this.piques, this.piquesKill, null, this)
         this.physics.add.overlap(this.player, this.eau_surface, this.waterKill, null, this)
+        this.physics.add.overlap(this.player, this.CameraHitBox, this.cameraChange, null, this)
+        this.physics.add.collider(this.stalactite, sols, this.casseStala, null, this)
+        this.physics.add.collider(this.player, this.stalactite, this.stalaKill, null, this)
 
 
 
 
 
-        this.physics.world.setBounds(0, 0, 70*32, 20*32);
-        this.cameras.main.setBounds(0, 0, 70*32, 20*32);
+        this.physics.world.setBounds(0, 0, 130*32, 20*32);
+        this.cameras.main.setBounds(this.cameraX1, this.cameraY1, this.cameraX2, this.cameraY2);
         this.cameras.main.zoom = 1.2;
         this.cameras.main.startFollow(this.player);
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -124,7 +138,7 @@ class glace_1 extends Phaser.Scene {
     update() {
 
 
-
+        this.cameras.main.setBounds(this.cameraX1, this.cameraY1, this.cameraX2, this.cameraY2);
         if (this.cursors.left.isDown) {
             this.IsGoingRight = false;
             this.player.setVelocityX(-200);
@@ -145,13 +159,60 @@ class glace_1 extends Phaser.Scene {
 
         }
 
+        this.stalactite.getChildren().forEach(stala => {
+            if(this.player.x >= stala.x){
+                stala.body.setAllowGravity(true)
+            }});
+
+
+
     }
     waterKill(player, water){
         player.setDepth(-1);
         player.setVelocityY(20)
         setTimeout(() => {
-            this.scene.restart(); 
+            player.setDepth(0);
+            this.player.setVelocityY(200); 
+            this.scene.restart();
+
         }, 1500);
 
+    }
+
+    piquesKill(player, spikes){
+        this.cameras.main.shake(200, 0.02)
+        this.cameras.main.flash()
+        setTimeout(() => {
+            this.scene.restart();
+        }, 200);
+
+    }
+
+    stalaKill(player, stala){
+        this.cameras.main.shake(200, 0.02)
+        this.cameras.main.flash()
+        setTimeout(() => {
+            this.scene.restart();
+        }, 200);
+
+    }
+
+    cameraChange(player,camerahitbox){
+        console.log(this.cameraX1)
+        this.cameraX1 = 69*32
+        this.cameraX2 = 130*32
+        this.cameraY1 = 0
+        this.cameraY2 = 20*32
+    }
+
+    cameraGoBack(player,camerahitbox){
+        console.log(this.cameraX1)
+        this.cameraX1 = 69*32
+        this.cameraX2 = 130*32
+        this.cameraY1 = 0
+        this.cameraY2 = 20*32
+    }
+    casseStala(stala, sols){
+        stala.destroy()
     }
 }

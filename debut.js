@@ -99,6 +99,7 @@ class debut extends Phaser.Scene {
             "mousse",
             tileset
         );
+
         test.setCollisionByProperty({ estSolide: true });
         this.player = this.physics.add.sprite(50, 50, 'perso');
         this.player.setCollideWorldBounds(true);

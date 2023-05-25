@@ -5,7 +5,7 @@
 var config = {
     type: Phaser.AUTO,
     width: 896, height: 448,
-//    width: 1280, height: 320,
+    //width: 1280, height: 320,
     pixelArt : true,
     physics: {
     default: 'arcade',
@@ -13,6 +13,6 @@ var config = {
     gravity: { y: 1000 },
     debug: true,
     }},
-    scene: [debut],
+    scene: [glace_1,debut],
     };
     new Phaser.Game(config);  
