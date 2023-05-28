@@ -26,6 +26,8 @@ class glace_1 extends Phaser.Scene {
         this.load.image("cascade", "assets/cascade.png")
         this.load.image("enemyShoot", "assets/enemyShoot.png")
         this.load.image("Bdg", "assets/BDG.png")
+        this.load.image("pilier_glace", "assets/pilier_glace.png")
+        this.load.image("feu","assets/feu.png")
         this.load.image("enemyRL", "assets/enemyRL.png")
         this.load.image("enemyFollow", "assets/enemyFollow.png")
         this.load.image("eau_surface","assets/eau_surface.png")
@@ -33,16 +35,28 @@ class glace_1 extends Phaser.Scene {
         this.load.image("piques", "assets/piques.png")
         this.load.image("lumieres", "assets/lumieres.png")
         this.load.image("stalactite","assets/stalactite.png")
+        this.load.image("bloc_cassable","assets/bloc_cassable.png")
     }
 
     create() {
         this.fond_1 = this.add.image(448, 224, "fond_1");
         this.fond_2 = this.add.image(1000,250, "fond_2");
+
         this.cameraY1 = 0
         this.cameraY2 = 20*32
         this.cameraX1 = 0
         this.cameraX2 = 70*32
         this.changeCam = false
+        
+        //mageFeu
+        this.canMageFeu = false;
+        this.mageFeu = false;
+        this.IsGoingRight = false;
+        this.dashCD1 = true;
+        this.cristalBreak = false;
+        this.CanBDF = true;
+        //mageFeu
+
         const carteDuNiveau = this.add.tilemap("map_glace");
         const tileset = carteDuNiveau.addTilesetImage(
             "assets_glace",
@@ -73,6 +87,22 @@ class glace_1 extends Phaser.Scene {
         this.calque_stalactite.objects.forEach(calque_stalactite => {
             const POP = this.stalactite.create(calque_stalactite.x +16 , calque_stalactite.y -16, "stalactite").body.setAllowGravity(false);
         });
+
+        this.pilier_glace = this.physics.add.group();
+        this.calque_pilier_glace = carteDuNiveau.getObjectLayer('pilier');
+        this.calque_pilier_glace.objects.forEach(calque_pilier_glace => {
+            const POP = this.pilier_glace.create(calque_pilier_glace.x +16 , calque_pilier_glace.y -24, "pilier_glace").body.setAllowGravity(false);
+        });
+        this.feu = this.physics.add.group();
+        this.calque_feu = carteDuNiveau.getObjectLayer('feu');
+        this.calque_feu.objects.forEach(calque_feu => {
+            const POP = this.feu.create(calque_feu.x +16 , calque_feu.y -22, "feu").body.setAllowGravity(false);
+        });
+        this.bloc_cassable = this.physics.add.group();
+        this.calque_bloc_cassable = carteDuNiveau.getObjectLayer('solCassable');
+        this.calque_bloc_cassable.objects.forEach(calque_bloc_cassable => {
+            const POP = this.bloc_cassable.create(calque_bloc_cassable.x +16 , calque_bloc_cassable.y -16, "bloc_cassable").body.setAllowGravity(false).setImmovable(true);
+        });
         const neige = carteDuNiveau.createLayer(
             "neige",
             tileset
@@ -81,7 +111,7 @@ class glace_1 extends Phaser.Scene {
             "sols",
             tileset
         );
-        this.player = this.physics.add.sprite(60*32, 4*32, 'perso');
+        this.player = this.physics.add.sprite(2*32, 16*32, 'perso');
         this.player.setCollideWorldBounds(true);
         this.player.setSize(32,48).setOffset(10,8)
 
@@ -89,9 +119,13 @@ class glace_1 extends Phaser.Scene {
         sols.setCollisionByExclusion(-1, true);
 
         this.CameraHitBox = this.physics.add.sprite(69.5*32, 96, "SpriteHitBox").setSize(32, 128)//.body.setAllowGravity(false)//.setImmovable(true)
+        this.feuHitBox = this.physics.add.sprite(135*32,16*32, "SpriteHitBox").setSize(64,64)
+        this.SpriteFireBall = this.physics.add.group();
         this.physics.add.collider(this.CameraHitBox, sols);
+        this.physics.add.collider(this.feuHitBox, this.bloc_cassable);
         this.physics.add.collider(this.player, sols);
         this.physics.add.collider(this.player, neige);
+        this.physics.add.collider(this.player, this.bloc_cassable);
         this.physics.add.collider(this.player, this.piques, this.piquesKill, null, this)
         this.physics.add.overlap(this.player, this.eau_surface, this.waterKill, null, this)
         this.physics.add.overlap(this.player, this.CameraHitBox, this.cameraChange, null, this)
@@ -102,7 +136,7 @@ class glace_1 extends Phaser.Scene {
 
 
 
-        this.physics.world.setBounds(0, 0, 130*32, 20*32);
+        this.physics.world.setBounds(0, 0, 140*32, 30*32);
         this.cameras.main.setBounds(this.cameraX1, this.cameraY1, this.cameraX2, this.cameraY2);
         this.cameras.main.zoom = 1.2;
         this.cameras.main.startFollow(this.player);
@@ -137,10 +171,62 @@ class glace_1 extends Phaser.Scene {
     }
 
     update() {
-
-
+        this.player.setDepth(1);
+        //camera
         this.cameras.main.setBounds(this.cameraX1, this.cameraY1, this.cameraX2, this.cameraY2);
-        if (this.cursors.left.isDown) {
+        //camera
+
+
+        
+        if (this.clavier.I.isDown && this.mageFeu == false && this.canMageFeu ==true && this.appuyer == false) {
+            this.mageFeu = true;
+            this.player.anims.play("perso_feu", true)
+        }
+
+        if (this.clavier.E.isDown && this.CanBDF == true && this.mageFeu == true) {
+            this.SpriteFireBall.create(this.player.x + 50, this.player.y, "SpriteFireBall").body.setAllowGravity(false);
+            this.SpriteFireBall.setVelocityX(600);
+            this.CanBDF = false;
+            setTimeout(() => {
+                this.CanBDF = true;
+            }, 500);
+        }
+
+        if (this.clavier.A.isDown && this.IsGoingRight == false && this.dashCD1 == true && this.mageFeu == true) {
+            this.IsGoingRight = false;
+            this.player.setVelocityX(-900);
+            this.player.setVelocityY(0);
+            this.player.body.setAllowGravity(false)
+            this.cristalBreak = true;
+            setTimeout(() => {
+                this.dashCD1 = false
+                this.player.body.setAllowGravity(true)
+                this.cristalBreak = false
+            }, 200);
+
+            this.time.addEvent({
+                delay: 1000, callback: () => {
+                    this.dashCD1 = true
+                },
+            })
+        }
+
+        else if (this.clavier.A.isDown && this.IsGoingRight == true && this.dashCD1 == true && this.mageFeu == true) {
+            this.IsGoingRight = true;
+            this.player.setVelocityX(900);
+            this.player.setVelocityY(0);
+            this.player.body.setAllowGravity(false)
+            this.cristalBreak = true;
+            setTimeout(() => {
+                this.dashCD1 = false
+                this.player.body.setAllowGravity(true)
+                this.cristalBreak = false
+            }, 200);
+        }
+
+
+
+        else if (this.cursors.left.isDown) {
             this.IsGoingRight = false;
             this.player.setVelocityX(-200);
         }
@@ -160,22 +246,37 @@ class glace_1 extends Phaser.Scene {
 
         }
 
-        this.stalactite.getChildren().forEach(stala => {
+
+        if(this.clavier.I.isDown && this.physics.overlap(this.player, this.feuHitBox) && this.appuyer == false) {
+            this.canMageFeu = true
+            this.feu.getChildren()[0].setVisible(false)
+            setTimeout(() => {
+                this.bloc_cassable.getChildren()[0].destroy()
+            }, 200);
+        }
+
+                this.stalactite.getChildren().forEach(stala => {
             if(this.player.x >= stala.x){
                 stala.body.setAllowGravity(true)
             }});
+
+        
+            if (this.clavier.I.isDown) {
+                this.appuyer = true
+            }
+            else {
+                this.appuyer = false
+            }
 
 
 
     }
     waterKill(player, water){
         player.setDepth(-1);
-        player.setVelocityY(20)
+        this.player.setVelocityY(20)
         setTimeout(() => {
-            player.setDepth(0);
-            this.player.setVelocityY(200); 
+            player.setVelocityY(1000)
             this.scene.restart();
-
         }, 1500);
 
     }
@@ -202,7 +303,7 @@ class glace_1 extends Phaser.Scene {
         if(this.changeCam == false){
             console.log(this.cameraX1)
             this.cameraX1 = 69*32
-            this.cameraX2 = 130*32
+            this.cameraX2 = 71  *32
             this.cameraY1 = 0
             this.cameraY2 = 20*32
 
@@ -224,4 +325,5 @@ class glace_1 extends Phaser.Scene {
     casseStala(stala, sols){
         stala.destroy()
     }
+
 }
