@@ -42,6 +42,7 @@ class glace_1 extends Phaser.Scene {
         this.cameraY2 = 20*32
         this.cameraX1 = 0
         this.cameraX2 = 70*32
+        this.changeCam = false
         const carteDuNiveau = this.add.tilemap("map_glace");
         const tileset = carteDuNiveau.addTilesetImage(
             "assets_glace",
@@ -198,20 +199,28 @@ class glace_1 extends Phaser.Scene {
     }
 
     cameraChange(player,camerahitbox){
-        console.log(this.cameraX1)
-        this.cameraX1 = 69*32
-        this.cameraX2 = 130*32
-        this.cameraY1 = 0
-        this.cameraY2 = 20*32
+        if(this.changeCam == false){
+            console.log(this.cameraX1)
+            this.cameraX1 = 69*32
+            this.cameraX2 = 130*32
+            this.cameraY1 = 0
+            this.cameraY2 = 20*32
+
+            player.x = 71*32
+            this.changeCam = true
+        }
+
+        else if(this.changeCam == true){
+            console.log(this.cameraX1)
+            this.cameraX1 = 0
+            this.cameraX2 = 70*32
+            this.cameraY1 = 0
+            this.cameraY2 = 20*32
+            player.x = 68*32
+            this.changeCam = false
+        }
     }
 
-    cameraGoBack(player,camerahitbox){
-        console.log(this.cameraX1)
-        this.cameraX1 = 69*32
-        this.cameraX2 = 130*32
-        this.cameraY1 = 0
-        this.cameraY2 = 20*32
-    }
     casseStala(stala, sols){
         stala.destroy()
     }
