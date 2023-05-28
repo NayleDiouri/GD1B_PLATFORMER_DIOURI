@@ -193,9 +193,7 @@ class debut extends Phaser.Scene {
 
     update() {
 
-        if (this.clavier.D.isDown) {
-            console.log(this.onPlant)
-        }
+
         if (this.clavier.I.isDown && this.mageFeu == false && this.estPetit == false) {
             this.mageFeu = true;
             this.mageEau = false;
