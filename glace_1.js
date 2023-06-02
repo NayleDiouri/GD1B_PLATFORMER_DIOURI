@@ -41,6 +41,8 @@ class glace_1 extends Phaser.Scene {
         this.load.image("ronces", "assets/ronces.png")
         this.load.image("tronc", "assets/tronc.png")
         this.load.image("tronc_base", "assets/tronc_base.png")
+        this.load.image("pilier_bois","assets/pilier_bois.png")
+        this.load.image("eau","assets/eau.png")
     }
 
     create() {
@@ -64,6 +66,13 @@ class glace_1 extends Phaser.Scene {
         this.vieRonces = 2;
         this.vieTroncBase = 3;
         //mageFeu
+        this.canMageEau = false;
+        this.estPetit = false;
+        this.canClimb = false;
+        this.mageEau = false;
+        //mageEau
+        
+        //mageEau
 
         //enemyRL
         this.enemyRLHp = 2;
@@ -137,10 +146,20 @@ class glace_1 extends Phaser.Scene {
         this.calque_pilier_glace.objects.forEach(calque_pilier_glace => {
             const POP = this.pilier_glace.create(calque_pilier_glace.x + 16, calque_pilier_glace.y - 24, "pilier_glace").body.setAllowGravity(false).setImmovable(true);
         });
+        this.pilier_bois = this.physics.add.group();
+        this.calque_pilier_bois = carteDuNiveau.getObjectLayer('pilier2');
+        this.calque_pilier_bois.objects.forEach(calque_pilier_bois => {
+            const POP = this.pilier_bois.create(calque_pilier_bois.x + 16, calque_pilier_bois.y - 40, "pilier_bois").body.setAllowGravity(false).setImmovable(true);
+        });
         this.feu = this.physics.add.group();
         this.calque_feu = carteDuNiveau.getObjectLayer('feu');
         this.calque_feu.objects.forEach(calque_feu => {
             const POP = this.feu.create(calque_feu.x + 16, calque_feu.y - 22, "feu").body.setAllowGravity(false);
+        });
+        this.eau = this.physics.add.group();
+        this.calque_eau = carteDuNiveau.getObjectLayer('eau');
+        this.calque_eau.objects.forEach(calque_eau => {
+            const POP = this.eau.create(calque_eau.x + 16, calque_eau.y - 12, "eau").body.setAllowGravity(false);
         });
         this.bloc_cassable = this.physics.add.group();
         this.calque_bloc_cassable = carteDuNiveau.getObjectLayer('solCassable');
@@ -199,9 +218,17 @@ class glace_1 extends Phaser.Scene {
         this.calque_tronc_base.objects.forEach(calque_tronc_base => {
             const POP = this.tronc_base.create(calque_tronc_base.x + 16, calque_tronc_base.y - 26, "tronc_base").body.setAllowGravity(false).setImmovable(true)
         });
+        this.cascade = this.physics.add.group();
+        this.calque_cascade = carteDuNiveau.getObjectLayer('cascade');
+        this.calque_cascade.objects.forEach(calque_cascade => {
+            const POP = this.cascade.create(calque_cascade.x + 0, calque_cascade.y - 160, "cascade").body.setAllowGravity(false).setImmovable(true);
+        });
 
 
-
+        const mousse = carteDuNiveau.createLayer(
+            "mousse",
+            tileset
+        );
         const neige = carteDuNiveau.createLayer(
             "neige",
             tileset
@@ -220,6 +247,7 @@ class glace_1 extends Phaser.Scene {
         this.CameraHitBox1 = this.physics.add.sprite(69.5 * 32, 96, "SpriteHitBox").setSize(32, 128)//.body.setAllowGravity(false)//.setImmovable(true)
         this.CameraHitBox2 = this.physics.add.sprite(133.5 * 32, 19 * 32, "SpriteHitBox").setSize(250, 32)//.body.setAllowGravity(false)//.setImmovable(true)
         this.feuHitBox = this.physics.add.sprite(135 * 32, 16 * 32, "SpriteHitBox").setSize(64, 64)
+        this.eauHitBox = this.physics.add.sprite(134 * 32, 48 * 32, "SpriteHitBox").setSize(64, 64)
         this.lumiereHitbox = this.physics.add.sprite(0.75 * 32, 25 * 32, "bigLumiere").setScale(1.15)
         this.SpriteFireBall = this.physics.add.group();
         this.Bdg = this.physics.add.group();
@@ -227,6 +255,7 @@ class glace_1 extends Phaser.Scene {
         this.physics.add.collider(this.CameraHitBox2, sols);
         this.physics.add.collider(this.lumiereHitbox, sols);
         this.physics.add.collider(this.feuHitBox, this.bloc_cassable);
+        this.physics.add.collider(this.eauHitBox, sols);
         this.physics.add.collider(this.player, sols);
         this.physics.add.collider(this.player, neige);
         this.physics.add.collider(this.player, this.tronc);
@@ -249,6 +278,7 @@ class glace_1 extends Phaser.Scene {
         this.physics.add.collider(this.player, this.enemyRL)
         this.physics.add.collider(this.SpriteFireBall, this.enemyRL, this.enemyRLKill, null, this)
         this.physics.add.collider(this.player, this.pilier_glace)
+        this.physics.add.collider(this.player, this.pilier_bois)
         this.physics.add.collider(this.player, this.enemyShoot)
         this.physics.add.collider(this.SpriteFireBall, this.enemyShoot, this.enemyShootKill, null, this);
         this.physics.add.collider(this.player, this.Bdg, this.breakBDG, null, this);
@@ -307,7 +337,15 @@ class glace_1 extends Phaser.Scene {
 
         if (this.clavier.I.isDown && this.mageFeu == false && this.canMageFeu == true && this.appuyer == false) {
             this.mageFeu = true;
+            this.mageEau = false;
+
             this.player.anims.play("perso_feu", true)
+        }
+        if (this.clavier.O.isDown && this.mageEau == false && this.canMageEau == true && this.appuyer2 == false) {
+            this.mageFeu = false;
+            this.mageEau = true;
+
+            this.player.anims.play("perso_eau", true)
         }
 
         if (this.clavier.E.isDown && this.CanBDF == true && this.mageFeu == true && this.IsGoingRight == false) {
@@ -317,6 +355,11 @@ class glace_1 extends Phaser.Scene {
             setTimeout(() => {
                 this.CanBDF = true;
             }, 500);
+            this.time.addEvent({
+                delay: 500, callback: () => {
+                    this.SpriteFireBall.getChildren()[0].destroy()
+                },
+            })
         }
 
         else if (this.clavier.E.isDown && this.CanBDF == true && this.mageFeu == true && this.IsGoingRight == true) {
@@ -393,15 +436,45 @@ class glace_1 extends Phaser.Scene {
 
         }
 
+        if (this.clavier.A.isDown && this.physics.overlap(this.player, this.cascade) && this.mageEau == true) {
+
+            this.player.body.setAllowGravity(false);
+            this.player.setVelocityY(-150)
+
+        }
+        else {
+            this.player.body.setAllowGravity(true);
+        }
+
+        if (this.clavier.E.isDown && this.estPetit == false && this.mageEau == true && this.appuyer3 == false) {
+            this.player.y += 1;
+            this.player.setScale(0.5);
+            this.player.setSize(128, 64);
+
+            this.estPetit = true;
+        }
+        else if (this.clavier.E.isDown && this.estPetit == true && this.mageEau == true && !this.physics.overlap(this.player, this.ShrinkHitBox) && this.appuyer3 == false) {
+            this.player.y -= 1;
+            this.player.setScale(1);
+            this.player.setSize(64, 64)
+
+            this.estPetit = false;
+        }
+
 
         if (this.clavier.I.isDown && this.physics.overlap(this.player, this.feuHitBox) && this.appuyer == false) {
             this.canMageFeu = true
             this.feu.getChildren()[0].setVisible(false)
             this.time.addEvent({
                 delay: 200, callback: () => {
-                    this.bloc_cassable.getChildren()[0].destroy()
+                    this.bloc_cassable.getChildren()[0].body.setAllowGravity(true)
                 },
             })
+        }
+
+        if (this.clavier.O.isDown && this.physics.overlap(this.player, this.eauHitBox) && this.appuyer2 == false) {
+            this.canMageEau = true
+            this.eau.getChildren()[0].setVisible(false)
         }
 
         this.stalactite.getChildren().forEach(stala => {
@@ -422,6 +495,20 @@ class glace_1 extends Phaser.Scene {
         }
         else {
             this.appuyer = false
+        }
+
+        if (this.clavier.O.isDown) {
+            this.appuyer2 = true
+        }
+        else {
+            this.appuyer2 = false
+        }
+
+        if (this.clavier.E.isDown) {
+            this.appuyer3 = true
+        }
+        else {
+            this.appuyer3 = false
         }
 
 
