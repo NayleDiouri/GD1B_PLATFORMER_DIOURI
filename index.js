@@ -13,6 +13,6 @@ var config = {
     gravity: { y: 1000 },
     debug: true,
     }},
-    scene: [glace_1,debut],
+    scene: [glace_1],
     };
     new Phaser.Game(config);  
