@@ -1,0 +1,10 @@
+Les textes n'étants pas encore implémentés dans mon jeu voici comment jouer, flèches directionnelle gauche pour aller à gauche, droite pour aller à droite 
+et flèche du haut pour sauter.
+Une fois devant les pilier de chaques éléments il faudrat appuyer sur la touche : I pour récupérer l'élément feu et ensuite l'activer avec la meme touche
+O pour récupérer l'élément eau et ensuite l'activer avec la meme touche
+P pour récupérer l'élément plante et ensuite l'activer avec la meme touche
+
+sur avec chaque éléments on peut utiliser deux touche qui ont des pouvoir différents à chaque fois : A et E 
+A et E feu : A dash et E tirer des boules de feu
+A et E eau : A monter les cascades et E se rendre petit
+A et E plante : A faire pousser une plante qui sert d'ascenceur et E poser des plantes mines (mines pas encore active)
