@@ -494,13 +494,20 @@ class glace_1 extends Phaser.Scene {
 
 
         else if (this.cursors.left.isDown) {
+            if(this.IsGoingRight == true){
+                this.player.x -=8
+            }
             this.IsGoingRight = false;
             this.player.setFlip(true, false)
             this.player.setOffset(20, 8)
+            
             this.player.setVelocityX(-200);
         }
 
         else if (this.cursors.right.isDown) {
+            if(this.IsGoingRight == false){
+                this.player.x +=8
+            }
             this.IsGoingRight = true;
             this.player.setFlip(false, false)
             this.player.setOffset(10, 8)
