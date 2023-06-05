@@ -41,11 +41,21 @@ class glace_1 extends Phaser.Scene {
         this.load.image("ronces", "assets/ronces.png")
         this.load.image("tronc", "assets/tronc.png")
         this.load.image("tronc_base", "assets/tronc_base.png")
-        this.load.image("pilier_bois","assets/pilier_bois.png")
-        this.load.image("eau","assets/eau.png")
+        this.load.image("pilier_bois", "assets/pilier_bois.png")
+        this.load.image("eau", "assets/eau.png")
         this.load.image("pilier_plante", "assets/pilier_plante.png")
         this.load.image("medaille_plante", "assets/medaille_plante.png")
+        this.load.spritesheet('anims_feu', 'assets/anims_feu.png',
+            { frameWidth: 68, frameHeight: 96 });
+        this.load.spritesheet('anims_eau', 'assets/anims_eau.png',
+            { frameWidth: 68, frameHeight: 96 });
+        this.load.spritesheet('anims_plante', 'assets/anims_plante.png',
+            { frameWidth: 68, frameHeight: 96 });
+        this.load.spritesheet('anims_base', 'assets/anims_base.png',
+            { frameWidth: 68, frameHeight: 96 });
     }
+    
+    
 
     create() {
         this.fond_1 = this.add.image(448, 224, "fond_1");
@@ -57,6 +67,9 @@ class glace_1 extends Phaser.Scene {
         this.cameraX2 = 70 * 32
         this.changeCam = false
         this.changeCam2 = false
+
+
+        this.mageBase = true;
 
         //mageFeu
         this.canMageFeu = false;
@@ -104,8 +117,8 @@ class glace_1 extends Phaser.Scene {
         //enemyShoot
 
         //playerSpawn
-        this.playerX = 4*32
-        this.playerY = 16*32
+        this.playerX = 4 * 32
+        this.playerY = 16 * 32
         //this.playerX = 1 * 32
         //this.playerY = 25 * 32
         //this.playerX = 140 * 32
@@ -125,7 +138,7 @@ class glace_1 extends Phaser.Scene {
         this.eau_surface = this.physics.add.group();
         this.calque_eau_surface = carteDuNiveau.getObjectLayer('eau_surface');
         this.calque_eau_surface.objects.forEach(calque_eau_surface => {
-            const POP = this.eau_surface.create(calque_eau_surface.x , calque_eau_surface.y - 16, "eau_surface").body.setAllowGravity(false).setImmovable(true);
+            const POP = this.eau_surface.create(calque_eau_surface.x, calque_eau_surface.y - 16, "eau_surface").body.setAllowGravity(false).setImmovable(true);
         });
         this.eau_profondeur = this.physics.add.group();
         this.calque_eau_profondeur = carteDuNiveau.getObjectLayer('eau_profondeur');
@@ -281,7 +294,7 @@ class glace_1 extends Phaser.Scene {
         this.eauHitBox = this.physics.add.sprite(134 * 32, 48 * 32, "SpriteHitBox").setSize(64, 64)
         this.planteHitBox = this.physics.add.sprite(277 * 32, 35 * 32, "SpriteHitBox").setSize(64, 64)
         this.lumiereHitbox = this.physics.add.sprite(0.75 * 32, 25 * 32, "bigLumiere").setScale(1.15)
-        this.CameraHitBox3 = this.physics.add.sprite(140 * 32, 40*32, "SpriteHitBox").setSize(32, 128)
+        this.CameraHitBox3 = this.physics.add.sprite(140 * 32, 40 * 32, "SpriteHitBox").setSize(32, 128)
         this.SpriteFireBall = this.physics.add.group();
         this.Bdg = this.physics.add.group();
         this.plante = this.physics.add.group();
@@ -362,7 +375,46 @@ class glace_1 extends Phaser.Scene {
             frames: [{ key: 'perso_eau', frame: 0 }],
             frameRate: 20
         });
-
+        this.anims.create({
+            key: 'move_feu',
+            frames: this.anims.generateFrameNumbers('anims_feu', { start: 12, end: 19 }),
+            frameRate: 7,
+        });
+        this.anims.create({
+            key: 'jump_feu',
+            frames: this.anims.generateFrameNumbers('anims_feu', { start: 0, end: 11 }),
+            frameRate: 12,
+        });
+        this.anims.create({
+            key: 'move_eau',
+            frames: this.anims.generateFrameNumbers('anims_eau', { start: 12, end: 19 }),
+            frameRate: 7,
+        });
+        this.anims.create({
+            key: 'jump_eau',
+            frames: this.anims.generateFrameNumbers('anims_eau', { start: 0, end: 11 }),
+            frameRate: 12,
+        });
+        this.anims.create({
+            key: 'move_base',
+            frames: this.anims.generateFrameNumbers('anims_base', { start: 12, end: 19 }),
+            frameRate: 7,
+        });
+        this.anims.create({
+            key: 'jump_base',
+            frames: this.anims.generateFrameNumbers('anims_base', { start: 0, end: 11 }),
+            frameRate: 12,
+        });
+        this.anims.create({
+            key: 'move_plante',
+            frames: this.anims.generateFrameNumbers('anims_plante', { start: 12, end: 19 }),
+            frameRate: 7,
+        });
+        this.anims.create({
+            key: 'jump_plante',
+            frames: this.anims.generateFrameNumbers('anims_plante', { start: 0, end: 11 }),
+            frameRate: 12,
+        });
         this.fond_1.setScrollFactor(0).setDepth(-3)
         this.fond_2.setScrollFactor(0.25).setDepth(-2)
 
@@ -380,22 +432,28 @@ class glace_1 extends Phaser.Scene {
             this.mageFeu = true;
             this.mageEau = false;
             this.magePlante = false;
+            this.mageBase = false;
 
-            this.player.anims.play("perso_feu", true)
+            this.player.anims.play("move_feu", true)
+
         }
         if (this.clavier.O.isDown && this.mageEau == false && this.canMageEau == true && this.appuyer2 == false) {
             this.mageFeu = false;
             this.mageEau = true;
             this.magePlante = false;
+            this.mageBase = false;
 
-            this.player.anims.play("perso_eau", true)
+            this.player.anims.play("move_eau", true)
+
         }
-                
+
         if (this.clavier.P.isDown && this.magePlante == false && this.canMagePlante == true && this.estPetit == false && this.appuyer4 == false) {
             this.mageFeu = false;
             this.mageEau = false;
             this.magePlante = true;
-            this.player.anims.play("perso_nature", true)
+            this.mageBase = false;
+
+            this.player.anims.play("move_plante", true)
         }
 
         if (this.clavier.A.isDown && this.canPlant == true && this.magePlante == true && this.player.body.blocked.down && this.onPlant == false) {
@@ -494,24 +552,48 @@ class glace_1 extends Phaser.Scene {
 
 
         else if (this.cursors.left.isDown) {
-            if(this.IsGoingRight == true){
-                this.player.x -=8
+            if (this.IsGoingRight == true) {
+                this.player.x -= 8
             }
             this.IsGoingRight = false;
             this.player.setFlip(true, false)
-            this.player.setOffset(20, 8)
-            
+            this.player.setOffset(20, 26)
+            if(this.player.body.onFloor() && this.mageBase == true){
+                this.player.anims.play("move_base", true)
+            }
+            if(this.player.body.onFloor() && this.mageFeu == true){
+                this.player.anims.play("move_feu", true)
+            }
+            if(this.player.body.onFloor() && this.mageEau == true){
+                this.player.anims.play("move_eau", true)
+            }
+            if(this.player.body.onFloor() && this.magePlante == true){
+                this.player.anims.play("move_plante", true)
+            }
             this.player.setVelocityX(-200);
         }
 
         else if (this.cursors.right.isDown) {
-            if(this.IsGoingRight == false){
-                this.player.x +=8
+            if (this.IsGoingRight == false) {
+                this.player.x += 8
             }
             this.IsGoingRight = true;
             this.player.setFlip(false, false)
-            this.player.setOffset(10, 8)
+            this.player.setOffset(10, 26)
+            if(this.player.body.onFloor() && this.mageBase == true){
+                this.player.anims.play("move_base", true)
+            }
+            if(this.player.body.onFloor() && this.mageFeu == true){
+                this.player.anims.play("move_feu", true)
+            }
+            if(this.player.body.onFloor() && this.mageEau == true){
+                this.player.anims.play("move_eau", true)
+            }
+            if(this.player.body.onFloor() && this.magePlante == true){
+                this.player.anims.play("move_plante", true)
+            }
             this.player.setVelocityX(200);
+            
         }
 
         else {
@@ -519,8 +601,20 @@ class glace_1 extends Phaser.Scene {
         }
 
         if (this.cursors.up.isDown && this.player.body.blocked.down) {
-
+            this.player.setOffset(10, 34)
             this.player.setVelocityY(-380);
+            if(this.mageBase == true){
+                this.player.anims.play("jump_base", true)
+            }
+            if(this.mageFeu == true){
+                this.player.anims.play("jump_feu", true)
+            }
+            if(this.mageEau == true){
+                this.player.anims.play("jump_eau", true)
+            }
+            if(this.magePlante == true){
+                this.player.anims.play("jump_plante", true)
+            }
 
         }
 
@@ -546,7 +640,7 @@ class glace_1 extends Phaser.Scene {
         else if (this.clavier.E.isDown && this.estPetit == true && this.mageEau == true && !this.physics.overlap(this.player, this.ShrinkHitBox) && this.appuyer3 == false) {
             this.player.y -= 6;
             this.player.setScale(1);
-            this.player.setSize(32, 48).setOffset(10, 8)
+            this.player.setSize(32, 48).setOffset(10, 30)
 
             this.estPetit = false;
         }
@@ -708,16 +802,16 @@ class glace_1 extends Phaser.Scene {
 
     }
     waterKill(player, water) {
-       if(this.mageEau == false) {
-        player.setDepth(-1);
-        this.time.addEvent({
-            delay: 200, callback: () => {
-                player.x = this.playerX
-                player.y = this.playerY
-                player.setDepth(1)
-            },
-        })
-    }
+        if (this.mageEau == false) {
+            player.setDepth(-1);
+            this.time.addEvent({
+                delay: 200, callback: () => {
+                    player.x = this.playerX
+                    player.y = this.playerY
+                    player.setDepth(1)
+                },
+            })
+        }
 
     }
 
@@ -792,12 +886,12 @@ class glace_1 extends Phaser.Scene {
     cameraChange4(player, camerahitbox) {
         if (this.changeCam2 == false) {
             console.log(this.cameraX1)
-            this.cameraX1 = 140*32
-            this.cameraX2 = 140*32
+            this.cameraX1 = 140 * 32
+            this.cameraX2 = 140 * 32
             this.cameraY1 = 32 * 32
             this.cameraY2 = 20 * 32
 
-            player.x = 141 * 32
+            player.x = 142 * 32
             this.changeCam2 = true
         }
 
@@ -807,11 +901,11 @@ class glace_1 extends Phaser.Scene {
             this.cameraX2 = 140 * 32
             this.cameraY1 = 32 * 32
             this.cameraY2 = 20 * 32
-            player.x = 139 * 32
+            player.x = 138 * 32
             this.changeCam2 = false
         }
     }
-    
+
 
     casseStala(stala, sols) {
         stala.destroy()
@@ -892,7 +986,7 @@ class glace_1 extends Phaser.Scene {
         console.log(this.onPlant)
         this.onPlant = true;
     }
-    touchGround(player, sols){
+    touchGround(player, sols) {
         this.onPlant = false;
     }
 
