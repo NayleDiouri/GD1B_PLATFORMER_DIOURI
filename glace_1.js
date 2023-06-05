@@ -72,7 +72,7 @@ class glace_1 extends Phaser.Scene {
         this.mageBase = true;
 
         //mageFeu
-        this.canMageFeu = false;
+        this.canMageFeu = true;
         this.mageFeu = false;
         this.IsGoingRight = false;
         this.dashCD1 = true;
@@ -84,7 +84,7 @@ class glace_1 extends Phaser.Scene {
         //mageFeu
 
         //mageEau
-        this.canMageEau = false;
+        this.canMageEau = true;
         this.estPetit = false;
         this.canClimb = false;
         this.mageEau = false;
@@ -117,12 +117,12 @@ class glace_1 extends Phaser.Scene {
         //enemyShoot
 
         //playerSpawn
-        this.playerX = 4 * 32
-        this.playerY = 16 * 32
+        //this.playerX = 4 * 32
+        //this.playerY = 16 * 32
         //this.playerX = 1 * 32
         //this.playerY = 25 * 32
-        //this.playerX = 140 * 32
-        //this.playerY = 40 * 32
+        this.playerX = 140 * 32
+        this.playerY = 40 * 32
 
         //playerSpawn
 
@@ -283,7 +283,7 @@ class glace_1 extends Phaser.Scene {
         );
         this.player = this.physics.add.sprite(this.playerX, this.playerY, 'perso');
         this.player.setCollideWorldBounds(true);
-        this.player.setSize(32, 48).setOffset(10, 8)
+        this.player.setSize(32, 52).setOffset(14, 8)
 
         neige.setCollisionByExclusion(-1, true);
         sols.setCollisionByExclusion(-1, true);
@@ -557,7 +557,7 @@ class glace_1 extends Phaser.Scene {
             }
             this.IsGoingRight = false;
             this.player.setFlip(true, false)
-            this.player.setOffset(20, 26)
+            this.player.setOffset(25, 26)
             if(this.player.body.onFloor() && this.mageBase == true){
                 this.player.anims.play("move_base", true)
             }
@@ -601,7 +601,8 @@ class glace_1 extends Phaser.Scene {
         }
 
         if (this.cursors.up.isDown && this.player.body.blocked.down) {
-            this.player.setOffset(10, 34)
+            if(this.IsGoingRight == true){this.player.setOffset(10, 30)}
+            if(this.IsGoingRight == true){this.player.setOffset(10, 30)}
             this.player.setVelocityY(-380);
             if(this.mageBase == true){
                 this.player.anims.play("jump_base", true)
