@@ -46,12 +46,12 @@ class glace_1 extends Phaser.Scene {
         this.load.image("pilier_plante", "assets/pilier_plante.png")
         this.load.image("medaille_plante", "assets/medaille_plante.png")
         this.load.image("porte_fermee", "assets/porte_fermee.png")
-        this.load.image("mapBoss1", "assets/mapBoss1.png")
+
         this.load.image("plateformeBoss1", "assets/plateformeBoss1.png")
         this.load.image("platBoss1", "assets/platBoss1.png")
         this.load.image("plateformeBoss2", "assets/plateformeBoss2.png")
         this.load.image("platBoss2", "assets/platBoss2.png")
-        this.load.image("mapBoss2", "assets/mapBoss2.png")
+        this.load.image("boss", "assets/boss.png")
         this.load.spritesheet('porte_ouverte', 'assets/porte_ouverte.png',
             { frameWidth: 64, frameHeight: 96 });
         this.load.spritesheet('anims_feu', 'assets/anims_feu.png',
@@ -142,7 +142,16 @@ class glace_1 extends Phaser.Scene {
         this.playerY = 3 * 32
 
         //playerSpawn
-        this.changeMapBoss = false;
+        this.changeMapBossPlateforme = false;
+        this.changeMapBossPlat = false;
+        this.canDestroy1 = true;
+        this.changeMapBossPlateforme2 = false;
+        this.changeMapBossPlat2 = false;
+        this.canDestroy2 = true;
+        this.stage2 = false;
+        this.bossMove = false;
+        this.bossFlip = false;
+        this.bossHp = 100;
 
         const carteDuNiveau = this.add.tilemap("map_glace");
         const tileset = carteDuNiveau.addTilesetImage(
@@ -263,7 +272,7 @@ class glace_1 extends Phaser.Scene {
         this.checkPoint = this.physics.add.group();
         this.calque_checkPoint = carteDuNiveau.getObjectLayer('checkPoint');
         this.calque_checkPoint.objects.forEach(calque_checkPoint => {
-            const POP = this.checkPoint.create(calque_checkPoint.x + 16, calque_checkPoint.y - 16, "SpriteHitBox").setSize(32, 256).body.setAllowGravity(false).setImmovable(true);
+            const POP = this.checkPoint.create(calque_checkPoint.x + 16, calque_checkPoint.y - 4, "SpriteHitBox").setSize(32, 256).body.setAllowGravity(false).setImmovable(true);
         });
         this.ronces = this.physics.add.group();
         this.calque_ronces = carteDuNiveau.getObjectLayer('ronces');
@@ -290,11 +299,7 @@ class glace_1 extends Phaser.Scene {
         this.calque_ShrinkHitBox.objects.forEach(calque_ShrinkHitBox => {
             const POP = this.ShrinkHitBox.create(calque_ShrinkHitBox.x + 16, calque_ShrinkHitBox.y - 16, "SpriteHitBox").body.setAllowGravity(false).setImmovable(true);
         });
-        this.mapBoss1 = this.physics.add.group();
-        this.calque_mapBoss1 = carteDuNiveau.getObjectLayer('mapBoss1');
-        this.calque_mapBoss1.objects.forEach(calque_mapBoss1 => {
-            const POP = this.mapBoss1.create(calque_mapBoss1.x + 32, calque_mapBoss1.y -32, "mapBoss1").body.setAllowGravity(false).setImmovable(true);
-        });
+
         this.plateformeBoss1 = this.physics.add.group();
         this.calque_plateformeBoss1 = carteDuNiveau.getObjectLayer('plateformeBoss1');
         this.calque_plateformeBoss1.objects.forEach(calque_plateformeBoss1 => {
@@ -307,15 +312,25 @@ class glace_1 extends Phaser.Scene {
         });
         this.plateformeBoss2 = this.physics.add.group();
         this.calque_plateformeBoss2 = carteDuNiveau.getObjectLayer('plateformeBoss2');
-        this.calque_plateformeBoss2.objects.forEach(calque_plateformeBoss2 => {
-            const POP = this.plateformeBoss2.create(calque_plateformeBoss2.x + 16,calque_plateformeBoss2.y -16, "plateformeBoss2").body.setAllowGravity(false).setImmovable(true);
-        });
-        this.platBoss2 = this.physics.add.group();
-        this.calque_platBoss2 = carteDuNiveau.getObjectLayer('platBoss2');
-        this.calque_platBoss2.objects.forEach(calque_platBoss2 => {
-            const POP = this.platBoss2.create(calque_platBoss2.x + 16, calque_platBoss2.y -16, "platBoss2").body.setAllowGravity(false).setImmovable(true);
-        });
 
+        this.platBoss2 = this.physics.add.group();
+        this.calque_platBoss2 = carteDuNiveau.getObjectLayer('platBoss2');//platBoss2 > platboss3
+
+        this.plateformeBoss3 = this.physics.add.group();
+        this.calque_plateformeBoss3 = carteDuNiveau.getObjectLayer('plateformeBoss3');
+
+        this.platBoss3 = this.physics.add.group();
+        this.calque_platBoss3 = carteDuNiveau.getObjectLayer('platBoss3');
+
+        this.boss = this.physics.add.group();
+        this.calque_boss = carteDuNiveau.getObjectLayer('boss');
+        this.calque_boss.objects.forEach(calque_boss => {
+            const POP = this.boss.create(calque_boss.x + 16, calque_boss.y -16, "boss").body.setAllowGravity(false).setImmovable(true);
+        });
+        this.boss.getChildren()[0].setVelocityX(200)
+        this.boss.getChildren()[0].setVelocityY(200)
+        this.boss.getChildren()[0].body.bounce.x = 1;
+        this.boss.getChildren()[0].body.bounce.y = 1;
 
         const mousse = carteDuNiveau.createLayer(
             "mousse",
@@ -401,9 +416,9 @@ class glace_1 extends Phaser.Scene {
         this.physics.add.collider(this.plante_mine, this.enemyFollow,this.enemyFollowKill, null, this)
         this.physics.add.collider(this.porte, sols)
         this.physics.add.overlap(this.player, this.porte, this.openDoor, null, this)
-        this.physics.add.collider(this.player, this.mapBoss1)
         this.physics.add.collider(this.player, this.plateformeBoss1)
         this.physics.add.collider(this.player, this.platBoss1)
+        this.physics.add.collider(this.boss, sols)
 
 
 
@@ -589,7 +604,7 @@ class glace_1 extends Phaser.Scene {
             this.IsGoingRight = true;
             this.player.setVelocityX(900);
             this.player.setVelocityY(0);
-            this.player.body.setAllowGravity(false)
+            this.player.body.setAllowGravity(false);
             this.cristalBreak = true;
             setTimeout(() => {
                 this.dashCD1 = false
@@ -602,7 +617,6 @@ class glace_1 extends Phaser.Scene {
                 },
             })
         }
-
 
 
         else if (this.cursors.left.isDown) {
@@ -767,6 +781,9 @@ class glace_1 extends Phaser.Scene {
             this.appuyer4 = false
         }
 
+
+
+
         //enemyRL
 
         if (this.enemyDead1 == false) {
@@ -882,13 +899,68 @@ class glace_1 extends Phaser.Scene {
         });
         //checkPoint
 
-        if(this.clavier.ENTER.isDown){
-            this.changeMapBoss = true;
-            this.plateformeBoss1.destroy();
-            this.platBoss1.destroy();
+        if(this.clavier.ENTER.isDown && this.stage2 == false && this.appuyer5 == false){
+            if(this.canDestroy1 == true){
+                this.plateformeBoss1.getChildren()[0,1].destroy();
+                this.plateformeBoss1.getChildren()[0].destroy();
+                this.platBoss1.getChildren()[0,2].destroy();
+                this.platBoss1.getChildren()[0,1].destroy();
+                this.platBoss1.getChildren()[0].destroy();
+                this.canDestroy1 = false;
+            }
+            this.calque_plateformeBoss2.objects.forEach(calque_plateformeBoss2 => {
+                const POP = this.plateformeBoss2.create(calque_plateformeBoss2.x + 16,calque_plateformeBoss2.y -16, "plateformeBoss2").body.setAllowGravity(false).setImmovable(true);
+                
+    
+            });
+            this.calque_platBoss2.objects.forEach(calque_platBoss2 => {
+                const POP = this.platBoss2.create(calque_platBoss2.x + 16, calque_platBoss2.y -16, "platBoss2").body.setAllowGravity(false).setImmovable(true);
+    
+            });
+            this.stage2 =true;
+        }
+        else if(this.clavier.ENTER.isDown && this.stage2 == true && this.appuyer5 == false){
+            if(this.canDestroy2 == true){
+                this.plateformeBoss2.getChildren()[0,1].destroy();
+                this.plateformeBoss2.getChildren()[0].destroy();
+                this.platBoss2.getChildren()[0,1].destroy();
+                this.platBoss2.getChildren()[0].destroy();
+                this.canDestroy2 = false;
+
+            }
+            this.calque_plateformeBoss3.objects.forEach(calque_plateformeBoss3 => {
+                const POP = this.plateformeBoss3.create(calque_plateformeBoss3.x + 16,calque_plateformeBoss3.y -16, "plateformeBoss2").body.setAllowGravity(false).setImmovable(true);
+            });
+            this.calque_platBoss3.objects.forEach(calque_platBoss3 => {
+                const POP = this.platBoss3.create(calque_platBoss3.x + 16,calque_platBoss3.y -16, "platBoss2").body.setAllowGravity(false).setImmovable(true);
+            });
+            
+
         }
 
 
+
+
+
+        if (this.clavier.ENTER.isDown) {
+            this.appuyer5 = true
+        }
+        else {
+            this.appuyer5 = false
+        }
+
+
+
+        
+        
+        if(this.bossFlip == false){
+            this.boss.getChildren()[0].setFlip(true)
+            this.bossFlip = true 
+        }
+        else{
+            this.boss.getChildren()[0].setFlip(false)
+            this.bossFlip = false;
+        }
     }
     waterKill(player, water) {
         if (this.mageEau == false) {
@@ -1015,7 +1087,9 @@ class glace_1 extends Phaser.Scene {
 
             player.x = 183 * 32
             this.changeCam3 = false
-        }
+        }   
+
+
     }
 
 
@@ -1108,13 +1182,15 @@ class glace_1 extends Phaser.Scene {
     }
     openDoor(player, porte){
         if(this.clavier.SPACE.isDown){
+            porte.anims.play('porte_ouverte')
             this.time.addEvent({
                 delay: 400, callback: () => {
-                    porte.anims.play('porte_ouverte')
+
                     this.cameraX1 = 280 * 32
                     this.cameraX2 = 10 * 32
                     this.cameraY1 = 0 * 32
                     this.cameraY2 = 10 * 32
+                    this.bossMove = true;
 
             player.x = 285 * 32
             player.y = 5*32
