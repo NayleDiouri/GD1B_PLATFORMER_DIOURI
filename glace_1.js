@@ -46,7 +46,10 @@ class glace_1 extends Phaser.Scene {
         this.load.image("pilier_plante", "assets/pilier_plante.png")
         this.load.image("medaille_plante", "assets/medaille_plante.png")
         this.load.image("porte_fermee", "assets/porte_fermee.png")
-
+        this.load.image("imageDialogueDebut", "assets/dialogueDebut.png")
+        this.load.image("imageDialogueFeu", "assets/dialogueFeu.png")
+        this.load.image("imageDialogueEau", "assets/dialogueEau.png")
+        this.load.image("imageDialogueNature", "assets/dialogueNature.png")
         this.load.image("plateformeBoss1", "assets/plateformeBoss1.png")
         this.load.image("platBoss1", "assets/platBoss1.png")
         this.load.image("plateformeBoss2", "assets/plateformeBoss2.png")
@@ -82,7 +85,7 @@ class glace_1 extends Phaser.Scene {
         this.mageBase = true;
 
         //mageFeu
-        this.canMageFeu = true;
+        this.canMageFeu = false;
         this.mageFeu = false;
         this.IsGoingRight = false;
         this.dashCD1 = true;
@@ -94,14 +97,14 @@ class glace_1 extends Phaser.Scene {
         //mageFeu
 
         //mageEau
-        this.canMageEau = true;
+        this.canMageEau = false;
         this.estPetit = false;
         this.canClimb = false;
         this.mageEau = false;
         //mageEau
 
         //magePlante
-        this.canMagePlante = true;
+        this.canMagePlante = false;
         this.magePlante = false;
         this.canPlant = true;
         this.plantSpawn = -1;
@@ -132,14 +135,14 @@ class glace_1 extends Phaser.Scene {
         //enemyFollow
 
         //playerSpawn
-        //this.playerX = 4 * 32
-        //this.playerY = 16 * 32
+        this.playerX = 4 * 32
+        this.playerY = 16 * 32
         //this.playerX = 1 * 32
         //this.playerY = 25 * 32
         //this.playerX = 140 * 32
         //this.playerY = 40 * 32
-        this.playerX = 279 * 32
-        this.playerY = 3 * 32
+        //this.playerX = 279 * 32
+        //this.playerY = 3 * 32
 
         //playerSpawn
         this.changeMapBossPlateforme = false;
@@ -152,6 +155,7 @@ class glace_1 extends Phaser.Scene {
         this.bossMove = false;
         this.bossFlip = false;
         this.bossHp = 100;
+        this.bossAlive = true;
 
         const carteDuNiveau = this.add.tilemap("map_glace");
         const tileset = carteDuNiveau.addTilesetImage(
@@ -272,7 +276,7 @@ class glace_1 extends Phaser.Scene {
         this.checkPoint = this.physics.add.group();
         this.calque_checkPoint = carteDuNiveau.getObjectLayer('checkPoint');
         this.calque_checkPoint.objects.forEach(calque_checkPoint => {
-            const POP = this.checkPoint.create(calque_checkPoint.x + 16, calque_checkPoint.y - 4, "SpriteHitBox").setSize(32, 256).body.setAllowGravity(false).setImmovable(true);
+            const POP = this.checkPoint.create(calque_checkPoint.x + 16, calque_checkPoint.y - 30, "SpriteHitBox").setSize(32, 256).body.setAllowGravity(false).setImmovable(true);
         });
         this.ronces = this.physics.add.group();
         this.calque_ronces = carteDuNiveau.getObjectLayer('ronces');
@@ -418,7 +422,21 @@ class glace_1 extends Phaser.Scene {
         this.physics.add.overlap(this.player, this.porte, this.openDoor, null, this)
         this.physics.add.collider(this.player, this.plateformeBoss1)
         this.physics.add.collider(this.player, this.platBoss1)
+        this.physics.add.collider(this.plante_mine, this.plateformeBoss1)
+        this.physics.add.collider(this.plante_mine, this.platBoss1)
+        this.physics.add.collider(this.player, this.plateformeBoss2)
+        this.physics.add.collider(this.player, this.platBoss2)
+        this.physics.add.collider(this.plante_mine, this.plateformeBoss2)
+        this.physics.add.collider(this.plante_mine, this.platBoss2)
+        this.physics.add.collider(this.player, this.plateformeBoss3)
+        this.physics.add.collider(this.player, this.platBoss3)
+        this.physics.add.collider(this.plante_mine, this.plateformeBoss3)
+        this.physics.add.collider(this.plante_mine, this.platBoss3)
         this.physics.add.collider(this.boss, sols)
+        this.physics.add.collider(this.player, this.boss, this.bossKill, null, this)
+        this.physics.add.collider(this.plante_mine, this.boss, this.bossPlante, null, this)
+        this.physics.add.collider(this.SpriteFireBall, this.boss, this.bossBDF, null, this)
+        this.physics.add.collider(this.plante_mine, this.plateformeBoss1)
 
 
 
@@ -429,7 +447,7 @@ class glace_1 extends Phaser.Scene {
         this.cameras.main.zoom = 1.2;
         this.cameras.main.startFollow(this.player);
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.clavier = this.input.keyboard.addKeys('A,D,SPACE,SHIFT,E,X,I,O,P,ENTER');
+        this.clavier = this.input.keyboard.addKeys('A,D,SPACE,SHIFT,E,X,I,O,P,ENTER,W,X,C');
 
 
         this.anims.create({
@@ -484,6 +502,13 @@ class glace_1 extends Phaser.Scene {
         });
         this.fond_1.setScrollFactor(0).setDepth(-3)
         this.fond_2.setScrollFactor(0.25).setDepth(-2)
+        this.scoreHpBossText = this.add.text(90, 45, "HP BOSS :" + this.bossHp, { fontSize: '20px', fill: '#FFFFFF' })
+        this.scoreHpBossText.setScrollFactor(0).setDepth(2).setVisible(false);
+
+        this.dialogueDebut = this.add.image(450, 350, "imageDialogueDebut").setScrollFactor(0).setVisible(false)
+        this.dialogueFeu = this.add.image(450, 350, "imageDialogueFeu").setScrollFactor(0).setVisible(false)
+        //this.dialogueEau = this.add.image(1000, 250, "fond_2")
+        //this.dialogueNature = this.add.image(1000, 250, "fond_2")
 
     }
 
@@ -493,9 +518,10 @@ class glace_1 extends Phaser.Scene {
         //camera
 
 
+        this.scoreHpBossText.setText("HP BOSS :" + this.bossHp)
 
 
-        if (this.clavier.I.isDown && this.estPetit == false && this.mageFeu == false && this.canMageFeu == true && this.appuyer == false) {
+        if (this.clavier.W.isDown && this.estPetit == false && this.mageFeu == false && this.canMageFeu == true && this.appuyer == false) {
             if(this.mageBase == true){this.player.setOffset(25, 26)}
             
             this.mageFeu = true;
@@ -506,7 +532,7 @@ class glace_1 extends Phaser.Scene {
             this.player.anims.play("move_feu", true)
 
         }
-        if (this.clavier.O.isDown && this.mageEau == false && this.canMageEau == true && this.appuyer2 == false) {
+        if (this.clavier.X.isDown && this.mageEau == false && this.canMageEau == true && this.appuyer2 == false) {
             this.mageFeu = false;
             this.mageEau = true;
             this.magePlante = false;
@@ -516,7 +542,7 @@ class glace_1 extends Phaser.Scene {
 
         }
 
-        if (this.clavier.P.isDown && this.magePlante == false && this.canMagePlante == true && this.estPetit == false && this.appuyer4 == false) {
+        if (this.clavier.C.isDown && this.magePlante == false && this.canMagePlante == true && this.estPetit == false && this.appuyer4 == false) {
             this.mageFeu = false;
             this.mageEau = false;
             this.magePlante = true;
@@ -715,7 +741,7 @@ class glace_1 extends Phaser.Scene {
         }
 
 
-        if (this.clavier.I.isDown && this.physics.overlap(this.player, this.feuHitBox) && this.appuyer == false) {
+        if (this.clavier.W.isDown && this.physics.overlap(this.player, this.feuHitBox) && this.appuyer == false) {
             this.canMageFeu = true
             this.feu.getChildren()[0].setVisible(false)
             this.time.addEvent({
@@ -725,7 +751,7 @@ class glace_1 extends Phaser.Scene {
             })
         }
 
-        if (this.clavier.O.isDown && this.physics.overlap(this.player, this.eauHitBox) && this.appuyer2 == false) {
+        if (this.clavier.X.isDown && this.physics.overlap(this.player, this.eauHitBox) && this.appuyer2 == false) {
             this.canMageEau = true
             this.eau.getChildren()[0].setVisible(false)
             this.time.addEvent({
@@ -735,7 +761,7 @@ class glace_1 extends Phaser.Scene {
             })
         }
 
-        if (this.clavier.P.isDown && this.physics.overlap(this.player, this.planteHitBox) && this.appuyer4 == false) {
+        if (this.clavier.C.isDown && this.physics.overlap(this.player, this.planteHitBox) && this.appuyer4 == false) {
             this.canMagePlante = true
             this.medaille_plante.getChildren()[0].setVisible(false)
         }
@@ -753,14 +779,14 @@ class glace_1 extends Phaser.Scene {
         });
 
 
-        if (this.clavier.I.isDown) {
+        if (this.clavier.W.isDown) {
             this.appuyer = true
         }
         else {
             this.appuyer = false
         }
 
-        if (this.clavier.O.isDown) {
+        if (this.clavier.X.isDown) {
             this.appuyer2 = true
         }
         else {
@@ -774,7 +800,7 @@ class glace_1 extends Phaser.Scene {
             this.appuyer3 = false
         }
 
-        if (this.clavier.P.isDown) {
+        if (this.clavier.C.isDown) {
             this.appuyer4 = true
         }
         else {
@@ -899,10 +925,12 @@ class glace_1 extends Phaser.Scene {
         });
         //checkPoint
 
-        if(this.clavier.ENTER.isDown && this.stage2 == false && this.appuyer5 == false){
+        if(this.bossHp <= 65 && this.stage2 == false){
             if(this.canDestroy1 == true){
                 this.plateformeBoss1.getChildren()[0,1].destroy();
                 this.plateformeBoss1.getChildren()[0].destroy();
+                this.platBoss1.getChildren()[0,4].destroy();
+                this.platBoss1.getChildren()[0,3].destroy();
                 this.platBoss1.getChildren()[0,2].destroy();
                 this.platBoss1.getChildren()[0,1].destroy();
                 this.platBoss1.getChildren()[0].destroy();
@@ -919,49 +947,58 @@ class glace_1 extends Phaser.Scene {
             });
             this.stage2 =true;
         }
-        else if(this.clavier.ENTER.isDown && this.stage2 == true && this.appuyer5 == false){
+        else if(this.bossHp <= 30 && this.stage2 == true){
             if(this.canDestroy2 == true){
                 this.plateformeBoss2.getChildren()[0,1].destroy();
                 this.plateformeBoss2.getChildren()[0].destroy();
+                this.platBoss2.getChildren()[0,5].destroy();
+                this.platBoss2.getChildren()[0,4].destroy();
+                this.platBoss2.getChildren()[0,3].destroy();
+                this.platBoss2.getChildren()[0,2].destroy();
                 this.platBoss2.getChildren()[0,1].destroy();
                 this.platBoss2.getChildren()[0].destroy();
                 this.canDestroy2 = false;
+                this.calque_plateformeBoss3.objects.forEach(calque_plateformeBoss3 => {
+                    const POP = this.plateformeBoss3.create(calque_plateformeBoss3.x + 16,calque_plateformeBoss3.y -16, "plateformeBoss2").body.setAllowGravity(false).setImmovable(true);
+                });
+                this.calque_platBoss3.objects.forEach(calque_platBoss3 => {
+                    const POP = this.platBoss3.create(calque_platBoss3.x + 16,calque_platBoss3.y -16, "platBoss2").body.setAllowGravity(false).setImmovable(true);
+                });
 
             }
-            this.calque_plateformeBoss3.objects.forEach(calque_plateformeBoss3 => {
-                const POP = this.plateformeBoss3.create(calque_plateformeBoss3.x + 16,calque_plateformeBoss3.y -16, "plateformeBoss2").body.setAllowGravity(false).setImmovable(true);
-            });
-            this.calque_platBoss3.objects.forEach(calque_platBoss3 => {
-                const POP = this.platBoss3.create(calque_platBoss3.x + 16,calque_platBoss3.y -16, "platBoss2").body.setAllowGravity(false).setImmovable(true);
-            });
+
             
 
         }
-
-
-
-
-
-        if (this.clavier.ENTER.isDown) {
-            this.appuyer5 = true
+        if(this.bossHp <=0 && this.bossAlive == true){
+            this.bossAlive = false;
+            this.boss.getChildren()[0].destroy()
         }
-        else {
-            this.appuyer5 = false
+       
+        
+        if(this.bossFlip == false && this.bossHp > 0){
+            this.time.addEvent({
+                delay: 50, callback: () => {
+                    this.boss.getChildren()[0].setFlip(true)
+                    this.bossFlip = true 
+                },
+            })
         }
-
-
 
         
-        
-        if(this.bossFlip == false){
-            this.boss.getChildren()[0].setFlip(true)
-            this.bossFlip = true 
+        else if(this.bossFlip == true && this.bossHp > 0){
+            this.time.addEvent({
+                delay: 50, callback: () => {
+                    this.boss.getChildren()[0].setFlip(false)
+                    this.bossFlip = false 
+                },
+            })
         }
-        else{
-            this.boss.getChildren()[0].setFlip(false)
-            this.bossFlip = false;
-        }
+
+
     }
+
+        
     waterKill(player, water) {
         if (this.mageEau == false) {
             player.setDepth(-1);
@@ -998,6 +1035,21 @@ class glace_1 extends Phaser.Scene {
             },
         })
 
+    }
+
+    bossKill(player, boss) {
+        if(this.estPetit == false){
+            this.bossHp += 5
+            this.cameras.main.shake(200, 0.02)
+            this.cameras.main.flash()
+
+            player.x = 302*32
+            player.y = 8*32
+            if(this.bossHp > 100){
+                this.bossHp = 100
+            }
+        }
+            
     }
 
     cameraChange1(player, camerahitbox) {
@@ -1168,11 +1220,24 @@ class glace_1 extends Phaser.Scene {
 
                 },
             })
+            
         }
+        SpriteFireBall.setVisible(false)
 
 
 
     }
+    bossPlante(plante, boss){
+        this.bossHp -= 5
+        plante.destroy()
+        this.plant_mineSpawn -=1
+    }
+
+    bossBDF(BDF, boss){
+        this.bossHp -= 2
+        BDF.setVisible(false)
+    }
+    
     touchPlant(player, plante) {
         console.log(this.onPlant)
         this.onPlant = true;
