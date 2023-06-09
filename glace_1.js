@@ -505,10 +505,10 @@ class glace_1 extends Phaser.Scene {
         this.scoreHpBossText = this.add.text(90, 45, "HP BOSS :" + this.bossHp, { fontSize: '20px', fill: '#FFFFFF' })
         this.scoreHpBossText.setScrollFactor(0).setDepth(2).setVisible(false);
 
-        this.dialogueDebut = this.add.image(450, 350, "imageDialogueDebut").setScrollFactor(0).setVisible(false)
-        this.dialogueFeu = this.add.image(450, 350, "imageDialogueFeu").setScrollFactor(0).setVisible(false)
-        this.dialogueEau = this.add.image(450, 350, "imageDialogueEau").setScrollFactor(0).setVisible(false)
-        this.dialogueNature = this.add.image(450, 350, "imageDialogueNature").setScrollFactor(0).setVisible(false)
+        this.dialogueDebut = this.add.image(450, 350, "imageDialogueDebut").setScrollFactor(0).setVisible(false).setDepth(3)
+        this.dialogueFeu = this.add.image(450, 350, "imageDialogueFeu").setScrollFactor(0).setVisible(false).setDepth(3)
+        this.dialogueEau = this.add.image(450, 350, "imageDialogueEau").setScrollFactor(0).setVisible(false).setDepth(3)
+        this.dialogueNature = this.add.image(450, 350, "imageDialogueNature").setScrollFactor(0).setVisible(false).setDepth(3)
         this.hitBoxDialogueDebut = this.physics.add.sprite(1*32, 14*32, "SpriteHitBox").setSize(100,128)
         this.hitBoxDialogueFeu = this.physics.add.sprite(134*32, 14*32, "SpriteHitBox").setSize(100,128)
         this.hitBoxDialogueEau = this.physics.add.sprite(133*32, 45*32, "SpriteHitBox").setSize(100,128)
@@ -581,7 +581,7 @@ class glace_1 extends Phaser.Scene {
                 this.plante_mine.getChildren()[this.plant_mineSpawn].destroy()
                 this.plant_mineSpawn -= 1
             }
-            this.plante_mine.create(this.player.x, this.player.y, "plante_mine").body.setImmovable(true);
+            this.plante_mine.create(this.player.x, this.player.y, "plante_mine")
             this.plant_mineSpawn += 1
             this.canPlant_mine = false;
             setTimeout(() => {
