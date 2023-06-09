@@ -135,7 +135,7 @@ class glace_1 extends Phaser.Scene {
         //enemyFollow
 
         //playerSpawn
-        this.playerX = 4 * 32
+        this.playerX = 1 * 32
         this.playerY = 16 * 32
         //this.playerX = 1 * 32
         //this.playerY = 25 * 32
@@ -286,12 +286,12 @@ class glace_1 extends Phaser.Scene {
         this.tronc = this.physics.add.group();
         this.calque_tronc = carteDuNiveau.getObjectLayer('tronc');
         this.calque_tronc.objects.forEach(calque_tronc => {
-            const POP = this.tronc.create(calque_tronc.x + 16, calque_tronc.y - 244, "tronc").body.setAllowGravity(false).setImmovable(true)
+            const POP = this.tronc.create(calque_tronc.x + 16, calque_tronc.y - 239, "tronc").body.setAllowGravity(false).setImmovable(true)
         });
         this.tronc_base = this.physics.add.group();
         this.calque_tronc_base = carteDuNiveau.getObjectLayer('tronc_base');
         this.calque_tronc_base.objects.forEach(calque_tronc_base => {
-            const POP = this.tronc_base.create(calque_tronc_base.x + 16, calque_tronc_base.y - 26, "tronc_base").body.setAllowGravity(false).setImmovable(true)
+            const POP = this.tronc_base.create(calque_tronc_base.x + 16, calque_tronc_base.y - 21, "tronc_base").body.setAllowGravity(false).setImmovable(true)
         });
         this.cascade = this.physics.add.group();
         this.calque_cascade = carteDuNiveau.getObjectLayer('cascade');
@@ -399,14 +399,14 @@ class glace_1 extends Phaser.Scene {
         this.physics.add.collider(this.player, this.cristaux, this.BreakDash, null, this)
         this.physics.add.collider(this.SpriteFireBall, this.cristaux, this.BreakBDF, null, this);
         this.physics.add.collider(this.SpriteFireBall, this.ronces, this.BreakRonces, null, this);
-        this.physics.add.collider(this.player, this.enemyRL)
+        this.physics.add.collider(this.player, this.enemyRL, this.collideEnemyRL, null, this)
         this.physics.add.collider(this.SpriteFireBall, this.enemyRL, this.enemyRLKill, null, this)
         this.physics.add.collider(this.player, this.pilier_glace)
         this.physics.add.collider(this.player, this.pilier_bois)
         this.physics.add.collider(this.player, this.pilier_plante)
-        this.physics.add.collider(this.player, this.enemyShoot)
+        this.physics.add.collider(this.player, this.enemyShoot, this.collideEnemySHoot, null, this)
         this.physics.add.collider(this.SpriteFireBall, this.enemyShoot, this.enemyShootKill, null, this);
-        this.physics.add.collider(this.player, this.Bdg, this.breakBDG, null, this);
+        this.physics.add.collider(this.player, this.Bdg, this.killBDG, null, this);
         this.physics.add.collider(sols, this.Bdg, this.breakBDGSols, null, this);
         this.physics.add.collider(this.cristaux, this.Bdg, this.breakBDG, null, this);
         this.physics.add.collider(this.SpriteFireBall, this.tronc_base, this.breakTroncBase1, null, this)
@@ -414,7 +414,7 @@ class glace_1 extends Phaser.Scene {
         this.physics.add.collider(this.tronc_base, sols)
         this.physics.add.collider(this.tronc, sols)
         this.physics.add.collider(this.enemyFollow, sols)
-        this.physics.add.collider(this.player, this.enemyFollow)
+        this.physics.add.collider(this.player, this.enemyFollow, this.collideEnemyFollow, null, this)
         this.physics.add.collider(this.cristaux, this.enemyFollow)
         this.physics.add.collider(this.ronces, this.enemyFollow)
         this.physics.add.collider(this.plante_mine, this.enemyFollow,this.enemyFollowKill, null, this)
@@ -507,8 +507,19 @@ class glace_1 extends Phaser.Scene {
 
         this.dialogueDebut = this.add.image(450, 350, "imageDialogueDebut").setScrollFactor(0).setVisible(false)
         this.dialogueFeu = this.add.image(450, 350, "imageDialogueFeu").setScrollFactor(0).setVisible(false)
-        //this.dialogueEau = this.add.image(1000, 250, "fond_2")
-        //this.dialogueNature = this.add.image(1000, 250, "fond_2")
+        this.dialogueEau = this.add.image(450, 350, "imageDialogueEau").setScrollFactor(0).setVisible(false)
+        this.dialogueNature = this.add.image(450, 350, "imageDialogueNature").setScrollFactor(0).setVisible(false)
+        this.hitBoxDialogueDebut = this.physics.add.sprite(1*32, 14*32, "SpriteHitBox").setSize(100,128)
+        this.hitBoxDialogueFeu = this.physics.add.sprite(134*32, 14*32, "SpriteHitBox").setSize(100,128)
+        this.hitBoxDialogueEau = this.physics.add.sprite(133*32, 45*32, "SpriteHitBox").setSize(100,128)
+        this.hitBoxDialogueNature = this.physics.add.sprite(276*32, 35*32, "SpriteHitBox").setSize(100,128)
+        this.hitBoxHpBoss = this.physics.add.sprite(292*32, 2*32, "SpriteHitBox").setSize(700, 256)
+        this.physics.add.collider(this.hitBoxDialogueDebut, sols)
+        this.physics.add.collider(this.hitBoxDialogueFeu, sols)
+        this.physics.add.collider(this.hitBoxDialogueFeu, this.bloc_cassable)
+        this.physics.add.collider(this.hitBoxDialogueEau, sols)
+        this.physics.add.collider(this.hitBoxDialogueNature, sols)
+        this.physics.add.collider(this.hitBoxHpBoss, sols)
 
     }
 
@@ -903,7 +914,7 @@ class glace_1 extends Phaser.Scene {
                     setTimeout(() => {
                         this.CanBdg = this.nombreEnemy
 
-                    }, 2000);
+                    }, 3000);
                 }
             }
         });
@@ -993,6 +1004,37 @@ class glace_1 extends Phaser.Scene {
                     this.bossFlip = false 
                 },
             })
+        }
+
+        if(this.physics.overlap(this.player, this.hitBoxDialogueDebut)){
+            this.dialogueDebut.setVisible(true)
+        }
+        else{
+            this.dialogueDebut.setVisible(false)
+        }
+        if(this.physics.overlap(this.player, this.hitBoxDialogueFeu)){
+            this.dialogueFeu.setVisible(true)
+        }
+        else{
+            this.dialogueFeu.setVisible(false)
+        }
+        if(this.physics.overlap(this.player, this.hitBoxDialogueEau)){
+            this.dialogueEau.setVisible(true)
+        }
+        else{
+            this.dialogueEau.setVisible(false)
+        }
+        if(this.physics.overlap(this.player, this.hitBoxDialogueNature)){
+            this.dialogueNature.setVisible(true)
+        }
+        else{
+            this.dialogueNature.setVisible(false)
+        }
+        if(this.physics.overlap(this.player, this.hitBoxHpBoss)){
+            this.scoreHpBossText.setVisible(true)
+        }
+        else{
+            this.scoreHpBossText.setVisible(false)
         }
 
 
@@ -1148,7 +1190,24 @@ class glace_1 extends Phaser.Scene {
     casseStala(stala, sols) {
         stala.destroy()
     }
-
+    collideEnemySHoot(player, enemy){
+        this.cameras.main.shake(200, 0.02)
+        this.cameras.main.flash()
+        player.x = this.playerX
+        player.y = this.playerY
+    }
+    collideEnemyRL(player, enemy){
+        this.cameras.main.shake(200, 0.02)
+        this.cameras.main.flash()
+        player.x = this.playerX
+        player.y = this.playerY
+    }
+    collideEnemyFollow(player, enemy){
+        this.cameras.main.shake(200, 0.02)
+        this.cameras.main.flash()
+        player.x = this.playerX
+        player.y = this.playerY
+    }
     BreakDash(player, cristal) {
         if (this.cristalBreak == true) {
             cristal.destroy()
@@ -1200,6 +1259,13 @@ class glace_1 extends Phaser.Scene {
     breakBDG(collider, bdg) {
         bdg.destroy()
     }
+    killBDG(player, bdg){
+        this.cameras.main.shake(200, 0.02)
+        this.cameras.main.flash()
+        player.x = this.playerX
+        player.y = this.playerY
+        bdg.destroy()
+    }
     breakBDGSols(bdg, sols) {
         bdg.destroy()
     }
@@ -1227,6 +1293,7 @@ class glace_1 extends Phaser.Scene {
 
 
     }
+
     bossPlante(plante, boss){
         this.bossHp -= 5
         plante.destroy()
@@ -1245,6 +1312,7 @@ class glace_1 extends Phaser.Scene {
     touchGround(player, sols) {
         this.onPlant = false;
     }
+
     openDoor(player, porte){
         if(this.clavier.SPACE.isDown){
             porte.anims.play('porte_ouverte')

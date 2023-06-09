@@ -13,9 +13,9 @@ var config = {
         default: 'arcade',
         arcade: {
             gravity: { y: 1000 },
-            debug: true,
+            debug: false,
         }
     },
-    scene: [glace_1],
+    scene: [titleScreen,glace_1],
 };
 new Phaser.Game(config);  
