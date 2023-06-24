@@ -156,6 +156,10 @@ class glace_1 extends Phaser.Scene {
         this.bossFlip = false;
         this.bossHp = 100;
         this.bossAlive = true;
+        this.timer = 0;
+        this.timerAdd = true;
+        this.deathCounter = 0;
+        this.isDead = false;
 
         const carteDuNiveau = this.add.tilemap("map_glace");
         const tileset = carteDuNiveau.addTilesetImage(
@@ -447,7 +451,7 @@ class glace_1 extends Phaser.Scene {
         this.cameras.main.zoom = 1.2;
         this.cameras.main.startFollow(this.player);
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.clavier = this.input.keyboard.addKeys('A,D,SPACE,SHIFT,E,X,I,O,P,ENTER,W,X,C');
+        this.clavier = this.input.keyboard.addKeys('A,D,SPACE,SHIFT,E,X,I,O,P,ENTER,W,X,C,R');
 
 
         this.anims.create({
@@ -504,6 +508,10 @@ class glace_1 extends Phaser.Scene {
         this.fond_2.setScrollFactor(0.25).setDepth(-2)
         this.scoreHpBossText = this.add.text(90, 45, "HP BOSS :" + this.bossHp, { fontSize: '20px', fill: '#FFFFFF' })
         this.scoreHpBossText.setScrollFactor(0).setDepth(2).setVisible(false);
+        this.timerText = this.add.text(300, 45, "temps :" + this.timer, { fontSize: '20px', fill: '#FFFFFF' })
+        this.timerText.setScrollFactor(0).setDepth(2);
+        this.deathCounterText = this.add.text(600, 45,"morts :" + this.deathCounter, { fontSize: '20px', fill: '#FFFFFF' })
+        this.deathCounterText.setScrollFactor(0).setDepth(2);
 
         this.dialogueDebut = this.add.image(450, 350, "imageDialogueDebut").setScrollFactor(0).setVisible(false).setDepth(3)
         this.dialogueFeu = this.add.image(450, 350, "imageDialogueFeu").setScrollFactor(0).setVisible(false).setDepth(3)
@@ -529,8 +537,22 @@ class glace_1 extends Phaser.Scene {
         //camera
 
 
-        this.scoreHpBossText.setText("HP BOSS :" + this.bossHp)
+        this.scoreHpBossText.setText("HP BOSS :" + this.bossHp);
+        this.timerText.setText("temps :" + this.timer);
+        this.deathCounterText.setText("morts :" + this.deathCounter);
 
+
+
+        if(this.timerAdd == true){
+            this.timerAdd = false;
+            this.time.addEvent({
+                delay: 1000, callback: () => {
+                    this.timer +=1
+                    this.timerAdd = true;
+                },
+            })
+        }
+        
 
         if (this.clavier.W.isDown && this.estPetit == false && this.mageFeu == false && this.canMageFeu == true && this.appuyer == false) {
             if(this.mageBase == true){this.player.setOffset(25, 26)}
@@ -1042,54 +1064,78 @@ class glace_1 extends Phaser.Scene {
 
         
     waterKill(player, water) {
-        if (this.mageEau == false) {
+        if (this.mageEau == false && this.isDead == false) {
             player.setDepth(-1);
+            this.isDead = true;
             this.time.addEvent({
                 delay: 200, callback: () => {
                     player.x = this.playerX
                     player.y = this.playerY
                     player.setDepth(1)
+                    this.isDead = false;
                 },
             })
+
+            this.deathCounter += 1;
         }
 
     }
 
+
     piquesKill(player, spikes) {
-        this.cameras.main.shake(200, 0.02)
-        this.cameras.main.flash()
-        this.time.addEvent({
-            delay: 200, callback: () => {
-                player.x = this.playerX
-                player.y = this.playerY
-            },
-        })
+        if (this.isDead == false) {
+            this.isDead = true;
+            this.cameras.main.shake(200, 0.02)
+            this.cameras.main.flash()
+            this.time.addEvent({
+                delay: 10, callback: () => {
+                    player.x = this.playerX
+                    player.y = this.playerY
+                    player.setDepth(1)
+                    this.isDead = false;
+                },
+            })
+    
+            this.deathCounter += 1;
+        }
 
     }
 
     stalaKill(player, stala) {
-        this.cameras.main.shake(200, 0.02)
-        this.cameras.main.flash()
-        this.time.addEvent({
-            delay: 200, callback: () => {
-                player.x = this.playerX
-                player.y = this.playerY
-            },
-        })
-
+        if (this.isDead == false) {
+            this.isDead = true;
+            this.cameras.main.shake(200, 0.02)
+            this.cameras.main.flash()
+            this.time.addEvent({
+                delay: 10, callback: () => {
+                    player.x = this.playerX
+                    player.y = this.playerY
+                    player.setDepth(1)
+                    this.isDead = false;
+                },
+            })
+    
+            this.deathCounter += 1;
+        }
     }
 
     bossKill(player, boss) {
-        if(this.estPetit == false){
+        if(this.estPetit == false && this.isDead == false){
+            this.isDead = true;
             this.bossHp += 5
             this.cameras.main.shake(200, 0.02)
             this.cameras.main.flash()
-
-            player.x = 302*32
-            player.y = 8*32
+            this.time.addEvent({
+                delay: 5, callback: () => {
+                player.x = 302*32
+                player.y = 8*32
+                this.isDead = false;
+            },
+        })
             if(this.bossHp > 100){
                 this.bossHp = 100
             }
+            this.deathCounter += 1;
         }
             
     }
@@ -1191,22 +1237,55 @@ class glace_1 extends Phaser.Scene {
         stala.destroy()
     }
     collideEnemySHoot(player, enemy){
-        this.cameras.main.shake(200, 0.02)
-        this.cameras.main.flash()
-        player.x = this.playerX
-        player.y = this.playerY
+        if (this.isDead == false) {
+            this.isDead = true;
+            this.cameras.main.shake(200, 0.02)
+            this.cameras.main.flash()
+            this.time.addEvent({
+                delay: 10, callback: () => {
+                    player.x = this.playerX
+                    player.y = this.playerY
+                    player.setDepth(1)
+                    this.isDead = false;
+                },
+            })
+    
+            this.deathCounter += 1;
+        }
     }
     collideEnemyRL(player, enemy){
-        this.cameras.main.shake(200, 0.02)
-        this.cameras.main.flash()
-        player.x = this.playerX
-        player.y = this.playerY
+        if (this.isDead == false) {
+            this.isDead = true;
+            this.cameras.main.shake(200, 0.02)
+            this.cameras.main.flash()
+            this.time.addEvent({
+                delay: 10, callback: () => {
+                    player.x = this.playerX
+                    player.y = this.playerY
+                    player.setDepth(1)
+                    this.isDead = false;
+                },
+            })
+    
+            this.deathCounter += 1;
+        }
     }
     collideEnemyFollow(player, enemy){
-        this.cameras.main.shake(200, 0.02)
-        this.cameras.main.flash()
-        player.x = this.playerX
-        player.y = this.playerY
+        if (this.isDead == false) {
+            this.isDead = true;
+            this.cameras.main.shake(200, 0.02)
+            this.cameras.main.flash()
+            this.time.addEvent({
+                delay: 10, callback: () => {
+                    player.x = this.playerX
+                    player.y = this.playerY
+                    player.setDepth(1)
+                    this.isDead = false;
+                },
+            })
+    
+            this.deathCounter += 1;
+        }
     }
     BreakDash(player, cristal) {
         if (this.cristalBreak == true) {
@@ -1260,10 +1339,21 @@ class glace_1 extends Phaser.Scene {
         bdg.destroy()
     }
     killBDG(player, bdg){
-        this.cameras.main.shake(200, 0.02)
-        this.cameras.main.flash()
-        player.x = this.playerX
-        player.y = this.playerY
+        if (this.isDead == false) {
+            this.isDead = true;
+            this.cameras.main.shake(200, 0.02)
+            this.cameras.main.flash()
+            this.time.addEvent({
+                delay: 10, callback: () => {
+                    player.x = this.playerX
+                    player.y = this.playerY
+                    player.setDepth(1)
+                    this.isDead = false;
+                },
+            })
+    
+            this.deathCounter += 1;
+        }
         bdg.destroy()
     }
     breakBDGSols(bdg, sols) {
